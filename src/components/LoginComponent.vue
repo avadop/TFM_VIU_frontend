@@ -2,9 +2,9 @@
 </script>
 
 <template>
-  <main>
+  <section>
     <p>Login</p>
-  </main>
+  </section>
 </template>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { useRoute} from 'vue-router'
   import {
     MDBNavbar,
     MDBNavbarToggler,
@@ -7,6 +7,16 @@ import { RouterLink, RouterView } from 'vue-router'
     MDBNavbarItem,
     MDBCollapse,
   } from 'mdb-vue-ui-kit';
+import {useStore} from 'vuex'
+import {computed } from 'vue'
+  import { ref } from 'vue';
+  const collapse = ref(false);
+
+const store = useStore()
+const loggedUser = computed(() => store.getters.getLoggedUser)
+
+const route=useRoute();
+const path = computed(() =>route.path)
 </script>
 
 <template>
@@ -14,23 +24,47 @@ import { RouterLink, RouterView } from 'vue-router'
     <!-- Navbar -->
     <MDBNavbar expand="lg" light bg="white" container position="sticky">
       <MDBNavbarToggler
-        target="#navbarExample04"
-        @click="collapse4 = !collapse4"
+        target="#navbar"
+        @click="collapse = !collapse"
       ></MDBNavbarToggler>
-      <MDBCollapse id="#navbarExample04" v-model="collapse4">
+      <img class="main__img" src="./assets/logo.jpg"/>
+      <MDBCollapse  id="#navbar" v-model="collapse" v-if="loggedUser">
         <MDBNavbarNav class="mb-2 mb-lg-0">
-          <MDBNavbarItem to="/" active> Home </MDBNavbarItem>
-          <MDBNavbarItem to="/facturas"> Facturas </MDBNavbarItem>
-          <MDBNavbarItem to="/gastos"> Gastos </MDBNavbarItem>
-          <MDBNavbarItem to="/clientes"> Clientes </MDBNavbarItem>
-          <MDBNavbarItem to="/productos"> Productos </MDBNavbarItem>
+          <MDBNavbarItem class="main__navbar--spacing" to="/" :active="path === '/'"> Home </MDBNavbarItem>
+          <MDBNavbarItem class="main__navbar--spacing" to="/facturas" :active="path === '/facturas'"> Facturas </MDBNavbarItem>
+          <MDBNavbarItem class="main__navbar--spacing" to="/gastos" :active="path === '/gastos'"> Gastos </MDBNavbarItem>
+          <MDBNavbarItem class="main__navbar--spacing" to="/clientes" :active="path === '/clientes'"> Clientes </MDBNavbarItem>
+          <MDBNavbarItem class="main__navbar--spacing" to="/productos" :active="path === '/productos'"> Productos </MDBNavbarItem>
         </MDBNavbarNav>
       </MDBCollapse>
     </MDBNavbar>
   </header>
-
-  <RouterView />
+  <main class="main__container shadow-2">
+    <RouterView />
+  </main>
 </template>
 
-<style scoped>
+<style lang="sass" scoped>
+.navbar 
+  padding:0
+
+.main 
+  &__img 
+    height: 4em
+  
+  &__navbar
+    &--spacing
+      margin-left: 1em
+
+  &__container
+    margin: auto
+    margin-top: 1em
+    width: 80%
+    background-color: white
+    border-radius: 0.15em
+    min-height: 5em
+    padding: 1.5em 2em
+
+  
+
 </style>

@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import {useStore} from 'vuex'
-import {computed } from 'vue'
-
-const store = useStore()
-const loggedUser = computed(() => store.getters.getLoggedUser)
-console.log("loggedUser", loggedUser.value)
+import Login from '../../components/LoginComponent.vue'
 </script>
 
 <template>
-  <main class="home-view">
+  <section class="home-view">
     <p>HOME</p>
-  </main>
+    <Login/>
+  </section>
 </template>
 
 <style lang="scss" scoped src="./home-view.scss">
