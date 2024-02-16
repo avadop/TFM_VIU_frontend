@@ -7,10 +7,10 @@ import SubHeader from "../../components/SubHeader.vue";
 
 const store = useStore()
 const router = useRouter()
-const userName = ref("");
+const user = ref({nombre: ""});
 
 onMounted(() => {
-  userName.value = store.getters.getLoggedUser
+  user.value = store.getters.getLoggedUser
 })
 
 </script>
@@ -19,7 +19,7 @@ onMounted(() => {
   <MDBRow start class="justify-content-center mb-5 mt-3">
     <MDBCol col="10">
       <SubHeader>
-        <h2>Bienvenid@, {{userName}} </h2>
+        <h2>Bienvenid@, {{user.nombre}} </h2>
         <span>Aquí tienes un resumen de tu empresa</span>
       </SubHeader>
     </MDBCol>

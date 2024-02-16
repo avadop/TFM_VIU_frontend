@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { MDBTable, MDBBtn, MDBBadge, MDBIcon } from "mdb-vue-ui-kit";
-import { useStore } from "vuex";
+import { useStore } from "vuex"
+import axios from 'axios'
+import CONSTANTS from '../../constants'
 
 const titles = ref([
   "ID",
@@ -12,6 +14,8 @@ const titles = ref([
   "Estado",
   "Acciones",
 ]);
+const facturas = ref(new Array<Object>())
+/* 
 const facturas = ref([
   {
     idFactura: "1",
@@ -46,20 +50,49 @@ const facturas = ref([
       text: "Vencido"
     },
   },
-]);
+]); */
 
 const store = useStore();
-const userName = ref("");
+const userId = ref("");
 
-onMounted(() => {
-  userName.value = store.getters.getLoggedUser;
+onMounted(async () => {
+  userId.value = store.getters.getLoggedUser.nif;
+
+  axios.get(`${CONSTANTS.FACTURAS_API_URL}/emisor/${userId.value}`).then(({ data: response }) => {
+    if (response.statusCode === 200) {
+      response.data.forEach(async (factura: any) => {
+        const { data: clienteResponse } = await axios.get(`${CONSTANTS.CLIENTES_API_URL}/${factura.id_receptor}`)
+        facturas.value.push(formatFactura(factura, clienteResponse.data))
+      })
+    }
+  })
 });
 
-const edit= (idFactura) => {
+const formatFactura = (factura: any, cliente: any) => {
+  return {
+          idFactura: factura.id_factura,
+          fechaEmision: factura.fecha_emision,
+          fechaVencimiento: factura.fecha_vencimiento,
+          nombreCliente: `${cliente.nombre} ${cliente.apellidos}`,
+          precioTotal: `${factura.precio_total} €`,
+          estadoPago: formatEstadoPago(factura.estado_pago)
+        }
+}
+
+const formatEstadoPago = (estadoPago: String) => {
+  if (estadoPago === 'pagado')
+    return { badge: 'success', text: 'Pagado' }
+  else if (estadoPago === 'vencido')
+    return { badge: 'danger', text: 'Vencido' }
+  else return { badge: 'warning', text: 'Pendiente' }
+
+}
+
+const edit = (idFactura: Number) => {
   console.log("editar factura", idFactura);
 }
 
-const remove= (idFactura) => {
+const remove = (idFactura: Number) => {
   console.log("eliminar factura", idFactura);
 }
 
@@ -68,7 +101,7 @@ const remove= (idFactura) => {
 <template>
   <section>
     <p>Facturas</p>
-    <MDBTable class="align-middle mb-0 bg-white">
+    <MDBTable class="align-middle mb-0 bg-white" v-if="facturas.length > 0">
       <thead class="bg-light">
         <tr>
           <th v-for="(title, index) in titles" :key="index">{{ title }}</th>
@@ -76,22 +109,22 @@ const remove= (idFactura) => {
       </thead>
       <tbody>
         <tr v-for="(factura, index) in facturas" :key="index">
-          <td>{{ userName }}-{{ factura.idFactura }}</td>
-          <td>Nombre recibidor factura</td>
+          <td>{{ userId }}-{{ factura.idFactura }}</td>
+          <td>{{ factura.nombreCliente }}</td>
           <td>{{ factura.fechaEmision }}</td>
           <td>{{ factura.fechaVencimiento }}</td>
           <td>{{ factura.precioTotal }}</td>
           <td>
-            <MDBBadge :badge="factura.estadoPago.badge" pill class="d-inline">{{factura.estadoPago.text}}</MDBBadge>
+            <MDBBadge :badge="factura.estadoPago.badge" pill class="d-inline">{{ factura.estadoPago.text }}</MDBBadge>
           </td>
-          <td >
+          <td>
             <div class="d-flex">
-            <MDBBtn color="link" size="sm" floating @click="edit(factura.idFactura)">
-              <MDBIcon icon="pen"></MDBIcon>
-            </MDBBtn>
-            <MDBBtn color="link" size="sm" floating @click="remove(factura.idFactura)">
-              <MDBIcon icon="trash"></MDBIcon>
-            </MDBBtn>
+              <MDBBtn color="link" size="sm" floating @click="edit(factura.idFactura)">
+                <MDBIcon icon="pen"></MDBIcon>
+              </MDBBtn>
+              <MDBBtn color="link" size="sm" floating @click="remove(factura.idFactura)">
+                <MDBIcon icon="trash"></MDBIcon>
+              </MDBBtn>
             </div>
           </td>
         </tr>
@@ -100,5 +133,4 @@ const remove= (idFactura) => {
   </section>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

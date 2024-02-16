@@ -8,12 +8,12 @@ const vuexLocal = new VuexPersistence({
 const store = createStore({
   state () {
     return {
-      loggedUser: null
+      loggedUser: null,
     }
   },
   mutations: {
-    saveLoggedUser (state, id) {
-      state.loggedUser = id
+    saveLoggedUser (state, user) {
+      state.loggedUser = user
     },
     removeLoggedUser(state) {
       state.loggedUser = null

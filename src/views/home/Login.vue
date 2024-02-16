@@ -4,6 +4,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import SubHeader from "../../components/SubHeader.vue";
+import axios from 'axios'
+import CONSTANTS from '../../constants'
 
 const store = useStore()
 const router = useRouter()
@@ -12,10 +14,18 @@ const userId = ref("")
 const password = ref("")
 
 const login = () => {
-  //if login correcto
-  store.commit('saveLoggedUser', userId);
-  router.push('/summary')
+  axios.post(`${CONSTANTS.USER_API_URL}/login`, {
+      nif: userId.value,
+      contrasenya: password.value
+  }).then(({data: response}) => {
+    if(response.statusCode === 200) {
+      store.commit('saveLoggedUser', response.data)
+      router.push('/summary')
+    }
+
+  }).catch(e => console.log("error", e))
 };
+
 </script>
 
 <template>
@@ -27,14 +37,9 @@ const login = () => {
       </SubHeader>
     </MDBCol>
   </MDBRow>
-  <MDBRow class="justify-content-center" tag="form"  @submit.prevent="login">
+  <MDBRow class="justify-content-center" tag="form" @submit.prevent="login">
     <MDBCol md="4">
-      <MDBBtn
-        class="mb-3"
-        color="secondary"
-        block
-        @click="() => $router.push('/registration')"
-      >
+      <MDBBtn class="mb-3" color="secondary" block @click="() => $router.push('/registration')">
         Registrarse
       </MDBBtn>
       <div class="d-flex flex-row w-100 mb-3">
@@ -42,25 +47,12 @@ const login = () => {
         <span class="ms-4 me-4"> o </span>
         <hr class="w-100" />
       </div>
-      <MDBInput
-        inputGroup
-        label="Usuario"
-        v-model="userId"
-        wrapperClass="mb-4"
-        required
-      >
+      <MDBInput inputGroup label="Usuario" v-model="userId" wrapperClass="mb-4" required>
         <template #prepend>
           <span class="input-group-text" id="basic-addon1">@</span>
         </template>
       </MDBInput>
-      <MDBInput
-        inputGroup
-        type="password"
-        label="Contraseña"
-        v-model="password"
-        wrapperClass="mb-4"
-        required
-      >
+      <MDBInput inputGroup type="password" label="Contraseña" v-model="password" wrapperClass="mb-4" required>
         <template #prepend>
           <span class="input-group-text" id="basic-addon1">@</span>
         </template>
@@ -72,5 +64,4 @@ const login = () => {
   </MDBRow>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

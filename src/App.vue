@@ -11,12 +11,15 @@ import {
 } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import { computed } from "vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import axios from 'axios'
+import CONSTANTS from './constants'
+
 const collapse = ref(false);
 
 const store = useStore();
 const router = useRouter();
-const loggedUser = computed(() => store.getters.getLoggedUser);
+const loggedUser = computed(() => store.getters.getLoggedUser)
 
 const route = useRoute();
 const path = computed(() => route.path);
@@ -75,7 +78,7 @@ const logout = () => {
           </MDBNavbarItem>
         </MDBNavbarNav>
         <div class="me-4">
-          <span class="me-4">{{ loggedUser }}</span>
+          <span class="me-4">{{ loggedUser.nombre }} {{ loggedUser.apellidos }}</span>
           <MDBBtn color="danger" floating @click="logout">
             <MDBIcon size="lg" icon="power-off"></MDBIcon>
           </MDBBtn>
