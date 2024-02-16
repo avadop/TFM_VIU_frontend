@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { MDBInput, MDBBtn, MDBRow, MDBCol } from "mdb-vue-ui-kit";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import SubHeader from "../../components/SubHeader.vue";
 
 const store = useStore()
+const router = useRouter()
 
-const userId = ref("");
-const password = ref("");
+const userId = ref("")
+const password = ref("")
 
 const login = () => {
   //if login correcto
   console.log("clicado");
   store.commit('saveLoggedUser', userId);
+  router.push('/summary')
 };
 </script>
 
@@ -25,7 +28,7 @@ const login = () => {
       </SubHeader>
     </MDBCol>
   </MDBRow>
-  <MDBRow class="justify-content-center" tag="form"   @submit.prevent="login">
+  <MDBRow class="justify-content-center" tag="form"  @submit.prevent="login">
     <MDBCol md="4">
       <MDBBtn
         class="mb-3"
@@ -58,7 +61,6 @@ const login = () => {
         v-model="password"
         wrapperClass="mb-4"
         required
-        invalidFeedback="Debes introducir tu contraseña"
       >
         <template #prepend>
           <span class="input-group-text" id="basic-addon1">@</span>

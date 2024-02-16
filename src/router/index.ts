@@ -1,11 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/home/HomeView.vue'
+import HelloWorld from '../components/HelloWorld.vue'
 import FacturasView from '../views/facturas/FacturasView.vue'
 import GastosView from '../views/gastos/GastosView.vue'
 import ProductosView from '../views/productos/ProductosView.vue'
 import ClientesView from '../views/clientes/ClientesView.vue'
 import Login from '../views/home/Login.vue'
 import RegisterUser from '../views/home/RegisterUser.vue'
+import store from '../store'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,8 +22,14 @@ const router = createRouter({
               // LEAVE THIS PATH BLANK. Matches /home
               path: '',
               name: 'login',
-              component: Login,
+              component: Login
           },
+          {
+            // LEAVE THIS PATH BLANK. Matches /home
+            path: '/summary',
+            name: 'HelloWorld',
+            component: HelloWorld
+        },
           {
               path: '/registration',
               name: 'registration',
@@ -48,15 +57,19 @@ const router = createRouter({
       name: 'clientes',
       component: ClientesView
     }
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue')
-    // }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  console.log("store.getters.getLoggedUser", store.getters.getLoggedUser)
+  console.log("to", to)
+
+  if(to.name !== 'login' && to.name !== 'registration' && store.getters.getLoggedUser){
+    next()
+  }
+  else if((to.name === 'login' || to.name === 'registration') && !store.getters.getLoggedUser){
+    next()
+  }
+});
 
 export default router
