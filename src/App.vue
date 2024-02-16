@@ -64,6 +64,7 @@ const path = computed(() =>route.path)
     border-radius: 0.15em
     min-height: 5em
     padding: 1.5em 2em
+    min-height: 85%
 
   
 

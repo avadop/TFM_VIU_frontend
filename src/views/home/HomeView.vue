@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import Login from '../../components/LoginComponent.vue'
 </script>
 
 <template>
-  <section class="home-view">
-    <p>HOME</p>
-    <Login/>
+  <section>
+    <RouterView class="mt-3"/>
   </section>
 </template>
 

@@ -4,6 +4,8 @@ import FacturasView from '../views/facturas/FacturasView.vue'
 import GastosView from '../views/gastos/GastosView.vue'
 import ProductosView from '../views/productos/ProductosView.vue'
 import ClientesView from '../views/clientes/ClientesView.vue'
+import Login from '../views/home/Login.vue'
+import RegisterUser from '../views/home/RegisterUser.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,7 +13,20 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      children: [
+          {
+              // LEAVE THIS PATH BLANK. Matches /home
+              path: '',
+              name: 'login',
+              component: Login,
+          },
+          {
+              path: '/registration',
+              name: 'registration',
+              component: RegisterUser,
+          }
+      ]
     },
     {
       path: '/facturas',
