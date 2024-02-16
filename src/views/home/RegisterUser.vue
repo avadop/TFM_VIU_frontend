@@ -20,7 +20,6 @@ const passwordCheck = ref("")
 
 const register = () => {
   if(passwordCheck.value === user.value.contrasenya) {
-  console.log("user", user.value);
   }
 };
 </script>

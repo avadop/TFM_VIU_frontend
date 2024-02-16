@@ -13,7 +13,6 @@ const password = ref("")
 
 const login = () => {
   //if login correcto
-  console.log("clicado");
   store.commit('saveLoggedUser', userId);
   router.push('/summary')
 };

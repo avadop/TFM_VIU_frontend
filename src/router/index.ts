@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/home/HomeView.vue'
-import HelloWorld from '../components/HelloWorld.vue'
+import UserSummary from '../views/home/UserSummary.vue'
 import FacturasView from '../views/facturas/FacturasView.vue'
 import GastosView from '../views/gastos/GastosView.vue'
 import ProductosView from '../views/productos/ProductosView.vue'
@@ -27,8 +27,8 @@ const router = createRouter({
           {
             // LEAVE THIS PATH BLANK. Matches /home
             path: '/summary',
-            name: 'HelloWorld',
-            component: HelloWorld
+            name: 'UserSummary',
+            component: UserSummary
         },
           {
               path: '/registration',
@@ -61,9 +61,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log("store.getters.getLoggedUser", store.getters.getLoggedUser)
-  console.log("to", to)
-
   if(to.name !== 'login' && to.name !== 'registration' && store.getters.getLoggedUser){
     next()
   }
