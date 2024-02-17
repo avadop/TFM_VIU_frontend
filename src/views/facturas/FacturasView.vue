@@ -101,6 +101,9 @@ const remove = (idFactura: Number) => {
 <template>
   <section>
     <p>Facturas</p>
+    <MDBBtn color="primary">
+      <MDBIcon icon="plus" class="me-2"></MDBIcon>Nueva Factura
+    </MDBBtn>
     <MDBTable class="align-middle mb-0 bg-white" v-if="facturas.length > 0">
       <thead class="bg-light">
         <tr>
@@ -109,7 +112,7 @@ const remove = (idFactura: Number) => {
       </thead>
       <tbody>
         <tr v-for="(factura, index) in facturas" :key="index">
-          <td>{{ userId }}-{{ factura.idFactura }}</td>
+          <td>{{ userId }}{{ factura.idFactura }}</td>
           <td>{{ factura.nombreCliente }}</td>
           <td>{{ factura.fechaEmision }}</td>
           <td>{{ factura.fechaVencimiento }}</td>
@@ -123,7 +126,7 @@ const remove = (idFactura: Number) => {
                 <MDBIcon icon="pen"></MDBIcon>
               </MDBBtn>
               <MDBBtn color="link" size="sm" floating @click="remove(factura.idFactura)">
-                <MDBIcon icon="trash"></MDBIcon>
+                <MDBIcon icon="trash" style="color: #c21807"></MDBIcon>
               </MDBBtn>
             </div>
           </td>
