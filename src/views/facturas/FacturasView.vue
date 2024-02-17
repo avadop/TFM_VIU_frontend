@@ -14,43 +14,7 @@ const titles = ref([
   "Estado",
   "Acciones",
 ]);
-const facturas = ref(new Array<Object>())
-/* 
-const facturas = ref([
-  {
-    idFactura: "1",
-    fechaEmision: "13/10/2024",
-    fechaVencimiento: "24/11/2024",
-    precioTotal: "546,78",
-    estadoPago: {
-      estado: "pendiente",
-      badge:"warning",
-      text: "Pendiente"
-    },
-  },
-  {
-    idFactura: "2",
-    fechaEmision: "13/10/2024",
-    fechaVencimiento: "24/11/2024",
-    precioTotal: "546,78",
-    estadoPago: {
-      estado: "pagado",
-      badge:"success",
-      text: "Pagado"
-    },
-  },
-  {
-    idFactura: "3",
-    fechaEmision: "13/10/2024",
-    fechaVencimiento: "24/11/2024",
-    precioTotal: "546,78",
-    estadoPago: {
-      estado: "vencido",
-      badge:"danger",
-      text: "Vencido"
-    },
-  },
-]); */
+const facturas = ref(new Array())
 
 const store = useStore();
 const userId = ref("");
@@ -62,7 +26,9 @@ onMounted(async () => {
     if (response.statusCode === 200) {
       response.data.forEach(async (factura: any) => {
         const { data: clienteResponse } = await axios.get(`${CONSTANTS.CLIENTES_API_URL}/${factura.id_receptor}`)
-        facturas.value.push(formatFactura(factura, clienteResponse.data))
+        if(clienteResponse.data.nif !== userId.value) {
+          facturas.value.push(formatFactura(factura, clienteResponse.data))
+        }
       })
     }
   })
@@ -104,7 +70,7 @@ const remove = (idFactura: Number) => {
     <MDBBtn color="primary">
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nueva Factura
     </MDBBtn>
-    <MDBTable class="align-middle mb-0 bg-white" v-if="facturas.length > 0">
+    <MDBTable class="align-middle mb-0 bg-white mt-4" v-if="facturas.length > 0">
       <thead class="bg-light">
         <tr>
           <th v-for="(title, index) in titles" :key="index">{{ title }}</th>

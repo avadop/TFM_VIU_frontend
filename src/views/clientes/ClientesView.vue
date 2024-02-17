@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { MDBTable, MDBBtn, MDBBadge, MDBIcon } from "mdb-vue-ui-kit";
+import { onMounted, ref } from "vue";
+import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
+import CONSTATNS from '../../constants'
+import axios from 'axios'
+import { format } from "path";
 
 const titles = ref([
   "Nombre",
@@ -10,39 +13,40 @@ const titles = ref([
   "Dirección",
   "Acciones",
 ]);
-const clientes = ref([
-  {
-    nif: "1",
-    nombre: "13/10/2024",
-    correo: "24/11/2024",
-    direccion: "546,78",
-  },
-  {
-    nif: "2",
-    nombre: "13/10/2024",
-    correo: "24/11/2024",
-    direccion: "546,78",
-  },
-  {
-    nif: "3",
-    nombre: "13/10/2024",
-    correo: "24/11/2024",
-    direccion: "546,78",
-  },
-]);
 
 const store = useStore();
-const userName = ref("");
+const userId = ref("");
+
+const clientes = ref(new Array())
 
 onMounted(() => {
-  userName.value = store.getters.getLoggedUser;
+  userId.value = store.getters.getLoggedUser.nif;
+  axios.get(`${CONSTATNS.CLIENTES_API_URL}/usuario/${userId.value}`).then(({ data: response }: any) => {
+    if (response.statusCode === 200) {
+      response.data.forEach((cliente: any) => {
+        if (cliente.nif != userId.value) {
+          clientes.value.push(formatCliente(cliente))
+        }
+      });
+    }
+  })
+
 });
 
-const edit = (nif) => {
+const formatCliente = (cliente: any) => {
+  return {
+    nombre: `${cliente.nombre} ${cliente.apellidos}`,
+    nif: cliente.nif,
+    correo: cliente.correo_electronico,
+    direccion: `${cliente.direccion}, ${cliente.poblacion}, ${cliente.codigo_postal}, ${cliente.provincia}, ${cliente.pais}`
+  }
+}
+
+const edit = (nif: String) => {
   console.log("editar cliente", nif);
 };
 
-const remove = (nif) => {
+const remove = (nif: String) => {
   console.log("eliminar cliente", nif);
 };
 </script>
@@ -67,20 +71,10 @@ const remove = (nif) => {
           <td>{{ cliente.direccion }}</td>
           <td>
             <div class="d-flex">
-              <MDBBtn
-                color="link"
-                size="sm"
-                floating
-                @click="edit(cliente.nif)"
-              >
+              <MDBBtn color="link" size="sm" floating @click="edit(cliente.nif)">
                 <MDBIcon icon="pen"></MDBIcon>
               </MDBBtn>
-              <MDBBtn
-                color="link"
-                size="sm"
-                floating
-                @click="remove(cliente.nif)"
-              >
+              <MDBBtn color="link" size="sm" floating @click="remove(cliente.nif)">
                 <MDBIcon icon="trash" style="color: #c21807"></MDBIcon>
               </MDBBtn>
             </div>
@@ -92,5 +86,4 @@ const remove = (nif) => {
 </template>
 
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

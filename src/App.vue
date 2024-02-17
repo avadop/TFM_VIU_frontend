@@ -43,8 +43,8 @@ const logout = () => {
         <MDBNavbarNav class="mb-2 mb-lg-0">
           <MDBNavbarItem
             class="main__navbar--spacing"
-            to="/"
-            :active="path === '/'"
+            to="/summary"
+            :active="path === '/summary'"
           >
             Home
           </MDBNavbarItem>

@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { MDBTable, MDBBtn, MDBBadge, MDBIcon } from "mdb-vue-ui-kit";
+import { onMounted, ref } from "vue";
+import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
+import axios from 'axios'
+import CONSTANTS from '../../constants'
+import { arrayBuffer } from "stream/consumers";
 
 const titles = ref([
   "Nombre",
@@ -11,7 +14,7 @@ const titles = ref([
   "Stock",
   "Acciones"
 ]);
-const productos = ref([
+/* const productos = ref([
   {
     nombre: "Producto 1",
     precioBase: "99.18 €",
@@ -33,20 +36,39 @@ const productos = ref([
     precioVenta: "120 €",
     stock : 172
   },
-]);
+]); */
 
 const store = useStore();
-const userName = ref("");
+const userId = ref("");
+const productos = ref(new Array())
 
 onMounted(() => {
-  userName.value = store.getters.getLoggedUser;
+  userId.value = store.getters.getLoggedUser.nif;
+  axios.get(`${CONSTANTS.PRODUCTOS_API_URL}/usuario/${userId.value}`).then(({data:response}: any) => {
+    console.log("PRODUCTOS RESPONSe", response)
+    if( response.statusCode === 200) {
+    response.data.forEach((producto: any) => {
+      productos.value.push(formatProducto(producto))
+    })
+  }
+  })
 });
 
-const edit = (idProducto) => {
+const formatProducto = (producto: any) => {
+  return {
+    nombre: producto.nombre,
+    precioBase: producto.precio_unidad,
+    impuesto: `${producto.impuesto} %`,
+    precioVenta: Number(producto.precio_unidad * (producto.impuesto/100 + 1)).toFixed(2),
+    stock: producto.stock
+  }
+}
+
+const edit = (idProducto: Number) => {
   console.log("editar producto", idProducto);
 };
 
-const remove = (idProducto) => {
+const remove = (idProducto: Number) => {
   console.log("eliminar producto", idProducto);
 };
 </script>

@@ -2,6 +2,8 @@
 import { computed, onMounted, ref } from "vue";
 import { MDBTable, MDBBtn, MDBBadge, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
+import CONSTANTS from '../../constants'
+import axios from 'axios'
 
 const titles = ref([
   "ID",
@@ -11,54 +13,43 @@ const titles = ref([
   "Estado",
   "Acciones",
 ]);
-const gastos = ref([
-  {
-    idGasto: "1",
-    fechaEmision: "13/10/2024",
-    fechaVencimiento: "24/11/2024",
-    precioTotal: "546,78",
-    estadoPago: {
-      estado: "pendiente",
-      badge: "warning",
-      text: "Pendiente",
-    },
-  },
-  {
-    idGasto: "2",
-    fechaEmision: "13/10/2024",
-    fechaVencimiento: "24/11/2024",
-    precioTotal: "546,78",
-    estadoPago: {
-      estado: "pagado",
-      badge: "success",
-      text: "Pagado",
-    },
-  },
-  {
-    idGasto: "3",
-    fechaEmision: "13/10/2024",
-    fechaVencimiento: "24/11/2024",
-    precioTotal: "546,78",
-    estadoPago: {
-      estado: "vencido",
-      badge: "danger",
-      text: "Vencido",
-    },
-  },
-]);
-
 const store = useStore();
-const userName = ref("");
+const userId = ref("");
 
-onMounted(() => {
-  userName.value = store.getters.getLoggedUser;
+const gastos = ref(new Array())
+
+onMounted(async () => {
+  userId.value = store.getters.getLoggedUser.nif;
+
+  axios.get(`${CONSTANTS.FACTURAS_API_URL}/receptor/${userId.value}`).then(({ data: response }:any) => {
+    if (response.statusCode === 200) {
+      response.data.forEach(async (gasto: any) => {
+        gastos.value.push({
+          idGasto: gasto.id_factura,
+          fechaEmision: gasto.fecha_emision,
+          fechaVencimiento: gasto.fecha_vencimiento,
+          precioTotal: `${gasto.precio_total} €`,
+          estadoPago: formatEstadoPago(gasto.estado_pago)
+        })
+      })
+    }
+  })
 });
 
-const edit = (idGasto) => {
+const formatEstadoPago = (estadoPago: String) => {
+  if (estadoPago === 'pagado')
+    return { badge: 'success', text: 'Pagado' }
+  else if (estadoPago === 'vencido')
+    return { badge: 'danger', text: 'Vencido' }
+  else return { badge: 'warning', text: 'Pendiente' }
+
+}
+
+const edit = (idGasto: Number) => {
   console.log("editar gasto", idGasto);
 };
 
-const remove = (idGasto) => {
+const remove = (idGasto: Number) => {
   console.log("eliminar gasto", idGasto);
 };
 </script>
@@ -77,7 +68,7 @@ const remove = (idGasto) => {
       </thead>
       <tbody>
         <tr v-for="(gasto, index) in gastos" :key="index">
-          <td>{{ userName }}{{ gasto.idGasto }}</td>
+          <td>{{ userId }}{{ gasto.idGasto }}</td>
           <td>{{ gasto.fechaEmision }}</td>
           <td>{{ gasto.fechaVencimiento }}</td>
           <td>{{ gasto.precioTotal }}</td>

@@ -1,23 +1,27 @@
 <script setup lang="ts">
-import { MDBInput, MDBBtn, MDBRow, MDBCol } from "mdb-vue-ui-kit";
-import { ref } from "vue";
-import SubHeader from "../../components/SubHeader.vue";
+import { MDBInput, MDBBtn, MDBRow, MDBCol } from "mdb-vue-ui-kit"
+import { ref } from "vue"
+import SubHeader from "../../components/SubHeader.vue"
+import axios from 'axios'
+import CONSTANTS from '../../constants'
+import { useRouter } from "vue-router"
 
-const nif = ref("");
-const pais = ref("");
-const codigoPostal = ref("");
-const correoElectronico = ref("");
-const provincia = ref("");
-const password = ref("");
-const direccion = ref("");
-const nombre = ref("");
-const apellidos = ref("");
-const poblacion = ref("");
+const router = useRouter()
 
-const passwordCheck = ref("");
+const nif = ref("")
+const pais = ref("")
+const codigoPostal = ref("")
+const correoElectronico = ref("")
+const provincia = ref("")
+const password = ref("")
+const direccion = ref("")
+const nombre = ref("")
+const apellidos = ref("")
+const poblacion = ref("")
+
+const passwordCheck = ref("")
 
 const register = () => {
-  console.log("register");
   if (passwordCheck.value === password.value) {
     const user = {
       nif: nif.value,
@@ -31,7 +35,17 @@ const register = () => {
       contrasenya: password.value,
       poblacion: poblacion.value,
     };
-    console.log("USER", user);
+    axios.post(`${CONSTANTS.USER_API_URL}/new`, user).then(({ data }) => {
+      if (data.statusCode === 200) {
+        axios.post(`${CONSTANTS.CLIENTES_API_URL}/new`, { id_usuario: user.nif, ...cliente }).then(({ data }) => {
+          if(data.statusCode === 200) 
+          router.push('/')
+
+        })
+      }
+    })
+    const { contrasenya, ...cliente } = user;
+
   }
 };
 </script>
@@ -47,141 +61,66 @@ const register = () => {
   <form @submit.prevent="register">
     <MDBRow class="justify-content-center px-3">
       <MDBCol col="4" class="pe-3">
-        <MDBInput
-          inputGroup
-          type="text"
-          label="NIF"
-          v-model="nif"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="NIF" v-model="nif" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
 
-        <MDBInput
-          inputGroup
-          type="text"
-          label="Nombre"
-          v-model="nombre"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="Nombre" v-model="nombre" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
-        <MDBInput
-          inputGroup
-          type="text"
-          label="Apellidos"
-          v-model="apellidos"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="Apellidos" v-model="apellidos" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
-        <MDBInput
-          inputGroup
-          type="email"
-          label="Correo electrónico"
-          v-model="correoElectronico"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="email" label="Correo electrónico" v-model="correoElectronico" wrapperClass="mb-4"
+          required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
-        <MDBInput
-          inputGroup
-          type="password"
-          label="Contraseña"
-          v-model="password"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="password" label="Contraseña" v-model="password" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
-        <MDBInput
-          inputGroup
-          type="password"
-          label="Confirmar contraseña"
-          v-model="passwordCheck"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="password" label="Confirmar contraseña" v-model="passwordCheck" wrapperClass="mb-4"
+          required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
       </MDBCol>
       <MDBCol col="4" class="ps-3">
-        <MDBInput
-          inputGroup
-          type="text"
-          label="Dirección"
-          v-model="direccion"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="Dirección" v-model="direccion" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
 
-        <MDBInput
-          inputGroup
-          type="text"
-          label="Código postal"
-          v-model="codigoPostal"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="Código postal" v-model="codigoPostal" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
 
-        <MDBInput
-          inputGroup
-          type="text"
-          label="Población"
-          v-model="poblacion"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="Población" v-model="poblacion" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
 
-        <MDBInput
-          inputGroup
-          type="text"
-          label="Provincia"
-          v-model="provincia"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="Provincia" v-model="provincia" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
         </MDBInput>
 
-        <MDBInput
-          inputGroup
-          type="text"
-          label="Pais"
-          v-model="pais"
-          wrapperClass="mb-4"
-          required
-        >
+        <MDBInput inputGroup type="text" label="Pais" v-model="pais" wrapperClass="mb-4" required>
           <template #prepend>
             <span class="input-group-text" id="basic-addon1">@</span>
           </template>
@@ -191,12 +130,7 @@ const register = () => {
 
     <MDBRow class="justify-content-center mt-2">
       <MDBCol col="2">
-        <MDBBtn
-          class="mb-4"
-          color="secondary"
-          block
-          @click="() => $router.back()"
-        >
+        <MDBBtn class="mb-4" color="secondary" block @click="() => $router.back()">
           Volver
         </MDBBtn>
       </MDBCol>
@@ -209,5 +143,4 @@ const register = () => {
   </form>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
