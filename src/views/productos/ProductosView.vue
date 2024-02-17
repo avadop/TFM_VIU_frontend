@@ -4,7 +4,6 @@ import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import axios from 'axios'
 import CONSTANTS from '../../constants'
-import { arrayBuffer } from "stream/consumers";
 
 const titles = ref([
   "Nombre",
@@ -14,29 +13,6 @@ const titles = ref([
   "Stock",
   "Acciones"
 ]);
-/* const productos = ref([
-  {
-    nombre: "Producto 1",
-    precioBase: "99.18 €",
-    impuesto: "21%",
-    precioVenta: "120 €",
-    stock : 17
-  },
-  {
-    nombre: "Producto 2",
-    precioBase: "99.18 €",
-    impuesto: "21%",
-    precioVenta: "120 €",
-    stock : 24
-  },
-  {
-    nombre: "Producto 3",
-    precioBase: "99.18 €",
-    impuesto: "21%",
-    precioVenta: "120 €",
-    stock : 172
-  },
-]); */
 
 const store = useStore();
 const userId = ref("");
@@ -44,13 +20,12 @@ const productos = ref(new Array())
 
 onMounted(() => {
   userId.value = store.getters.getLoggedUser.nif;
-  axios.get(`${CONSTANTS.PRODUCTOS_API_URL}/usuario/${userId.value}`).then(({data:response}: any) => {
-    console.log("PRODUCTOS RESPONSe", response)
-    if( response.statusCode === 200) {
-    response.data.forEach((producto: any) => {
-      productos.value.push(formatProducto(producto))
-    })
-  }
+  axios.get(`${CONSTANTS.PRODUCTOS_API_URL}/usuario/${userId.value}`).then(({ data: response }: any) => {
+    if (response.statusCode === 200) {
+      response.data.forEach((producto: any) => {
+        productos.value.push(formatProducto(producto))
+      })
+    }
   })
 });
 
@@ -59,7 +34,7 @@ const formatProducto = (producto: any) => {
     nombre: producto.nombre,
     precioBase: producto.precio_unidad,
     impuesto: `${producto.impuesto} %`,
-    precioVenta: Number(producto.precio_unidad * (producto.impuesto/100 + 1)).toFixed(2),
+    precioVenta: Number(producto.precio_unidad * (producto.impuesto / 100 + 1)).toFixed(2),
     stock: producto.stock
   }
 }
@@ -94,20 +69,10 @@ const remove = (idProducto: Number) => {
           <td>{{ producto.stock }}</td>
           <td>
             <div class="d-flex">
-              <MDBBtn
-                color="link"
-                size="sm"
-                floating
-                @click="edit(producto.idProducto)"
-              >
+              <MDBBtn color="link" size="sm" floating @click="edit(producto.idProducto)">
                 <MDBIcon icon="pen"></MDBIcon>
               </MDBBtn>
-              <MDBBtn
-                color="link"
-                size="sm"
-                floating
-                @click="remove(producto.idProducto)"
-              >
+              <MDBBtn color="link" size="sm" floating @click="remove(producto.idProducto)">
                 <MDBIcon icon="trash" style="color: #C21807;"></MDBIcon>
               </MDBBtn>
             </div>
@@ -119,5 +84,4 @@ const remove = (idProducto: Number) => {
 </template>
 
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

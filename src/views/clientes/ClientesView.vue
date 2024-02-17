@@ -4,7 +4,6 @@ import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import CONSTATNS from '../../constants'
 import axios from 'axios'
-import { format } from "path";
 
 const titles = ref([
   "Nombre",
