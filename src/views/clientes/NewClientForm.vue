@@ -131,7 +131,7 @@ const closeModal = () => {
             </MDBInput>
           </MDBCol>
           <MDBCol col="5" class="ps-3">
-            <MDBInput inputGroup type="text" placeholder="NIF" :formOutline="false" v-model="nif" wrapperClass="mb-4"
+            <MDBInput :disabled="props.isEdit" inputGroup type="text" placeholder="NIF" :formOutline="false" v-model="nif" wrapperClass="mb-4"
               required>
               <template #prepend>
                 <span class="input-group-text">
