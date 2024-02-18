@@ -4,7 +4,7 @@ import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import CONSTATNS from '../../constants'
 import axios from 'axios'
-import NewClientModal from './NewClientForm.vue'
+import ClientModal from './ClientForm.vue'
 
 const titles = ref([
   "Nombre",
@@ -50,7 +50,6 @@ const formatCliente = (cliente: any) => {
 }
 
 const edit = (nif: string) => {
-  console.log("editar cliente", nif);
   editClient.value = true
   openClientModal.value = true
   nifEditClient.value = nif
@@ -86,7 +85,7 @@ const closeClientModal = (reload: Boolean) => {
     <MDBBtn color="primary" @click="newClient">
       <MDBIcon icon="plus" class="me-2" ></MDBIcon>Nuevo Cliente
     </MDBBtn>
-    <NewClientModal :isModalOpen="openClientModal" :nifEditClient="nifEditClient" :isEdit="editClient" @closeModal="closeClientModal"/>
+    <ClientModal :isModalOpen="openClientModal" :nifEditClient="nifEditClient" :isEdit="editClient" @closeModal="closeClientModal"/>
     <MDBTable class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>

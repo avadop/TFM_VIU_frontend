@@ -36,12 +36,8 @@ const apellidos = ref("");
 const poblacion = ref("");
 
 watch(() => props.isEdit, (newValue) => {
-  console.log("PROPS", props.isEdit)
-  console.log("PROPS NIF", props.nifEditClient)
   if (newValue) {
-    console.log("now is isEdit", newValue)
     axios.get(`${CONSTANTS.CLIENTES_API_URL}/${props.nifEditClient}`).then(({ data: response }: any) => {
-      console.log("response", response)
       if (response.statusCode === 200) {
         nif.value = response.data.nif
         pais.value = response.data.pais
@@ -110,19 +106,21 @@ const closeModal = () => {
       <MDBModalTitle id="newClientModal"> Nuevo cliente </MDBModalTitle>
     </MDBModalHeader>
     <form @submit.prevent="createClient">
-      <MDBModalBody class="mt-3">
+      <MDBModalBody class="mt-2">
         <MDBRow start class="justify-content-center">
           <MDBCol col="5" class="pe-3">
-            <MDBInput inputGroup type="text" placeholder="Nombre" :formOutline="false" v-model="nombre"
-              wrapperClass="mb-4" required>
+            <label for="nombre-input" class="form-label">Nombre</label>
+            <MDBInput id="nombre-input" inputGroup type="text" placeholder="Nombre" :formOutline="false" v-model="nombre"
+              wrapperClass="mb-2" required>
               <template #prepend>
                 <span class="input-group-text">
                   <MDBIcon icon="user"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
-            <MDBInput inputGroup type="text" placeholder="Apellidos" :formOutline="false" v-model="apellidos"
-              wrapperClass="mb-4" required>
+            <label for="apellidos-input" class="form-label">Apellidos</label>
+            <MDBInput id="apellidos-input" inputGroup type="text" placeholder="Apellidos" :formOutline="false" v-model="apellidos"
+              wrapperClass="mb-2" required>
               <template #prepend>
                 <span class="input-group-text">
                   <MDBIcon icon="user"></MDBIcon>
@@ -131,7 +129,9 @@ const closeModal = () => {
             </MDBInput>
           </MDBCol>
           <MDBCol col="5" class="ps-3">
-            <MDBInput :disabled="props.isEdit" inputGroup type="text" placeholder="NIF" :formOutline="false" v-model="nif" wrapperClass="mb-4"
+            <label for="nif-input" class="form-label">NIF</label>
+
+            <MDBInput id="nif-input" :disabled="props.isEdit" inputGroup type="text" placeholder="NIF" :formOutline="false" v-model="nif" wrapperClass="mb-2"
               required>
               <template #prepend>
                 <span class="input-group-text">
@@ -139,8 +139,10 @@ const closeModal = () => {
                 </span>
               </template>
             </MDBInput>
-            <MDBInput inputGroup type="email" placeholder="Correo electrónico" :formOutline="false"
-              v-model="correoElectronico" wrapperClass="mb-4" required>
+            <label for="email-input" class="form-label">Correo electrónico</label>
+
+            <MDBInput id="email-input" inputGroup type="email" placeholder="example@mail.com" :formOutline="false"
+              v-model="correoElectronico" wrapperClass="mb-2" required>
               <template #prepend>
                 <span class="input-group-text">
                   <MDBIcon icon="at"></MDBIcon>
@@ -151,8 +153,10 @@ const closeModal = () => {
         </MDBRow>
         <MDBRow class="justify-content-center">
           <MDBCol col="10">
-            <MDBInput inputGroup type="text" placeholder="Dirección" :formOutline="false" v-model="direccion"
-              wrapperClass="mb-4" required>
+            <label for="direccion-input" class="form-label">Dirección</label>
+
+            <MDBInput id="direccion-input" inputGroup type="text" placeholder="Dirección" :formOutline="false" v-model="direccion"
+              wrapperClass="mb-2" required>
               <template #prepend>
                 <span class="input-group-text">
                   <MDBIcon icon="home"></MDBIcon>
@@ -161,19 +165,22 @@ const closeModal = () => {
             </MDBInput>
           </MDBCol>
         </MDBRow>
-        <MDBRow class="justify-content-center">
+        <MDBRow class="justify-content-center mb-3">
           <MDBCol col="5" class="pe-3">
-            <MDBInput inputGroup type="text" placeholder="Código postal" :formOutline="false" v-model="codigoPostal"
-              wrapperClass="mb-4" required>
+            <label for="codigo-postal-input" class="form-label">Código postal</label>
+
+            <MDBInput  id="codigo-postal-input" inputGroup type="text" placeholder="Código postal" :formOutline="false" v-model="codigoPostal"
+              wrapperClass="mb-2" required>
               <template #prepend>
                 <span class="input-group-text">
                   <MDBIcon icon="map-marker-alt"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
+            <label for="provincia-input" class="form-label">Provincia</label>
 
-            <MDBInput inputGroup type="text" placeholder="Provincia" :formOutline="false" v-model="provincia"
-              wrapperClass="mb-4" required>
+            <MDBInput id="provincia-input" inputGroup type="text" placeholder="Provincia" :formOutline="false" v-model="provincia"
+              wrapperClass="mb-2" required>
               <template #prepend>
                 <span class="input-group-text">
                   <MDBIcon icon="map-marker-alt"></MDBIcon>
@@ -182,16 +189,19 @@ const closeModal = () => {
             </MDBInput>
           </MDBCol>
           <MDBCol col="5" class="ps-3">
-            <MDBInput inputGroup type="text" placeholder="Población" :formOutline="false" v-model="poblacion"
-              wrapperClass="mb-4" required>
+            <label for="poblacion-input" class="form-label">Población</label>
+
+            <MDBInput id="poblacion-input" inputGroup type="text" placeholder="Población" :formOutline="false" v-model="poblacion"
+              wrapperClass="mb-2" required>
               <template #prepend>
                 <span class="input-group-text">
                   <MDBIcon icon="map-marker-alt"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
+            <label for="pais-input" class="form-label">País</label>
 
-            <MDBInput inputGroup type="text" placeholder="Pais" v-model="pais" wrapperClass="mb-4" required
+            <MDBInput id="pais-input" inputGroup type="text" placeholder="Pais" v-model="pais" wrapperClass="mb-2" required
               :formOutline="false">
               <template #prepend>
                 <span class="input-group-text">

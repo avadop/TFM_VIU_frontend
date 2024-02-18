@@ -4,6 +4,7 @@ import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import axios from 'axios'
 import CONSTANTS from '../../constants'
+import ProductModal from './ProductForm.vue'
 
 const titles = ref([
   "Nombre",
@@ -18,16 +19,25 @@ const store = useStore();
 const userId = ref("");
 const productos = ref(new Array())
 
+const openProductModal = ref(false)
+const idEditProduct = ref(null)
+const editProduct = ref(false)
+
 onMounted(() => {
   userId.value = store.getters.getLoggedUser.nif;
+  getProducts()
+});
+
+const getProducts = () => {
   axios.get(`${CONSTANTS.PRODUCTOS_API_URL}/usuario/${userId.value}`).then(({ data: response }: any) => {
+    productos.value = new Array()
     if (response.statusCode === 200) {
       response.data.forEach((producto: any) => {
         productos.value.push(formatProducto(producto))
       })
     }
   })
-});
+}
 
 const formatProducto = (producto: any) => {
   return {
@@ -39,21 +49,43 @@ const formatProducto = (producto: any) => {
   }
 }
 
-const edit = (idProducto: Number) => {
-  console.log("editar producto", idProducto);
+const edit = (idProducto: number) => {
+  editProduct.value = true
+  openProductModal.value = true
+  idEditProduct.value = idProducto
 };
 
-const remove = (idProducto: Number) => {
-  console.log("eliminar producto", idProducto);
+const remove = (idProducto: number) => {
+    axios.delete(`${CONSTANTS.PRODUCTOS_API_URL}/${idProducto}`).then(({data}:any) => {
+    if(data.statusCode === 200) {
+      getProducts()
+    }
+  })
 };
+
+const newClient = () => {
+  openProductModal.value = true
+  editProduct.value = false
+  idEditProduct.value = null
+}
+
+const closeProductModal = (reload: Boolean) => {
+  openProductModal.value = false
+  editProduct.value = false
+  idEditProduct.value = ""
+  if(reload) {
+    getProducts()
+  }
+}
 </script>
 
 <template>
   <section>
     <p>Productos</p>
-    <MDBBtn color="primary">
+    <MDBBtn color="primary" @click="newClient">
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nuevo producto
     </MDBBtn>
+    <ProductModal :isModalOpen="openProductModal" :idEditProduct="idEditProduct" :isEdit="editProduct" @closeModal="closeProductModal"/>
     <MDBTable class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>
