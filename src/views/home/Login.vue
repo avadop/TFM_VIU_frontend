@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MDBInput, MDBBtn, MDBRow, MDBCol } from "mdb-vue-ui-kit";
+import { MDBInput, MDBBtn, MDBRow, MDBCol, MDBIcon } from "mdb-vue-ui-kit";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -14,16 +14,19 @@ const userId = ref("")
 const password = ref("")
 
 const login = () => {
-  axios.post(`${CONSTANTS.USER_API_URL}/login`, {
-      nif: userId.value,
-      contrasenya: password.value
-  }).then(({data: response}) => {
-    if(response.statusCode === 200) {
-      store.commit('saveLoggedUser', response.data)
-      router.push('/summary')
-    }
+  // axios.post(`${CONSTANTS.USER_API_URL}/login`, {
+  //     nif: userId.value,
+  //     contrasenya: password.value
+  // }).then(({data: response}) => {
+  //   if(response.statusCode === 200) {
+  //     store.commit('saveLoggedUser', response.data)
+  //     router.push('/summary')
+  //   }
 
-  }).catch(e => console.log("error", e))
+  // }).catch(e => console.log("error", e))
+
+  store.commit('saveLoggedUser', {nombre: 'Andrea', apellidos: 'del Vado Puell', nif: '01189877H'})
+  router.push('/summary')
 };
 
 </script>
@@ -49,12 +52,12 @@ const login = () => {
       </div>
       <MDBInput inputGroup label="Usuario" v-model="userId" wrapperClass="mb-4" required>
         <template #prepend>
-          <span class="input-group-text" id="basic-addon1">@</span>
+          <span class="input-group-text" id="pais-input"><MDBIcon icon="user"></MDBIcon></span>
         </template>
       </MDBInput>
       <MDBInput inputGroup type="password" label="Contraseña" v-model="password" wrapperClass="mb-4" required>
         <template #prepend>
-          <span class="input-group-text" id="basic-addon1">@</span>
+          <span class="input-group-text" id="pais-input"><MDBIcon icon="key"></MDBIcon></span>
         </template>
       </MDBInput>
       <MDBBtn class="mb-4 mt-2" color="primary" block type="submit">
