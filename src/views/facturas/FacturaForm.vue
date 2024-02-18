@@ -16,7 +16,9 @@ import axios from "axios";
 import CONSTANTS from "../../constants";
 import { useStore } from "vuex";
 import DatePicker from "@vuepic/vue-datepicker";
+import ProductosTable from './ProductosTable.vue'
 import "@vuepic/vue-datepicker/dist/main.css";
+import ProductoModal from './AddProducto.vue'
 
 const date = ref();
 
@@ -29,30 +31,34 @@ const props = defineProps({
   idEditFactura: Number,
 });
 
+const productModalOpen = ref(false)
+
 const fechaEmision = ref(new Date());
 const fechaVencimiento = ref(new Date());
 const estadoPago = ref(CONSTANTS.EstadoPago[CONSTANTS.EstadoPago.pendiente]);
 const precioTotal = ref(0);
-const productos = ref(new Array())
-const clientes = ref(new Array())
-const nifSelectedClient = ref("")
+const productos = ref(new Array());
+const clientes = ref(new Array());
+const nifSelectedClient = ref("");
 
 onMounted(() => {
   const userId = store.getters.getLoggedUser.nif;
 
-  axios.get(`${CONSTANTS.CLIENTES_API_URL}/usuario/${userId}`).then(({ data: response }: any) => {
-    if (response.statusCode === 200) {
-      response.data.forEach((cliente: any) => {
-        if (cliente.nif != userId) {
-          clientes.value.push({
-            nif: cliente.nif,
-            nombre: `${cliente.nombre} ${cliente.apellidos}`
-          })
-        }
-      });
-    }
-  })
-})
+  axios
+    .get(`${CONSTANTS.CLIENTES_API_URL}/usuario/${userId}`)
+    .then(({ data: response }: any) => {
+      if (response.statusCode === 200) {
+        response.data.forEach((cliente: any) => {
+          if (cliente.nif != userId) {
+            clientes.value.push({
+              nif: cliente.nif,
+              nombre: `${cliente.nombre} ${cliente.apellidos}`,
+            });
+          }
+        });
+      }
+    });
+});
 
 watch(
   () => props.isEdit,
@@ -66,7 +72,7 @@ watch(
             fechaVencimiento.value = new Date(response.data.fecha_vencimiento);
             estadoPago.value = response.data.estado_pago;
             precioTotal.value = response.data.precio_total;
-            nifSelectedClient.value = response.data.id_receptor
+            nifSelectedClient.value = response.data.id_receptor;
           }
         });
     }
@@ -75,7 +81,7 @@ watch(
 
 const submitForm = () => {
   const userId = store.getters.getLoggedUser.nif;
-  
+
   const factura = {
     fecha_vencimiento: formatDate(fechaVencimiento.value),
     fecha_emision: formatDate(fechaEmision.value),
@@ -85,7 +91,7 @@ const submitForm = () => {
     id_receptor: nifSelectedClient,
   };
   if (props.isEdit) {
-    const editFactura = {...factura, id_factura: props.idEditFactura}
+    const editFactura = { ...factura, id_factura: props.idEditFactura };
     axios
       .put(`${CONSTANTS.FACTURAS_API_URL}/${props.idEditFactura}`, factura)
       .then(({ data }: any) => {
@@ -105,20 +111,25 @@ const submitForm = () => {
 };
 
 const formatDate = (date: Date) => {
-  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
-}
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+};
 
 const closeModal = () => {
   //Limpiar formulario
   fechaEmision.value = new Date();
   fechaVencimiento.value = new Date();
-  productos.value = new Array()
+  productos.value = new Array();
   estadoPago.value = CONSTANTS.EstadoPago[CONSTANTS.EstadoPago.pendiente];
   precioTotal.value = 0;
-  clientes.value = new Array()
-  nifSelectedClient.value = ""
+  clientes.value = new Array();
+  nifSelectedClient.value = "";
   emit("closeModal", true);
 };
+
+const addProduct = (event) => {
+  console.log("ADD PRODUCT", event)
+  productModalOpen.value = false
+}
 </script>
 
 <template>
@@ -129,7 +140,7 @@ const closeModal = () => {
     <form @submit.prevent="submitForm">
       <MDBModalBody class="mt-3">
         <MDBRow start class="justify-content-center">
-          <MDBCol col="4" class="pe-3">
+          <MDBCol col="5" class="pe-3">
             <label for="fecha-emision-input" class="form-label"
               >Fecha de emisión</label
             >
@@ -140,12 +151,24 @@ const closeModal = () => {
               v-model="fechaEmision"
               :enable-time-picker="false"
             />
-            <label for="clientes-input" class="form-label mt-3">Clientes </label>
-            <select class="form-select " v-model="estadoPago" aria-label="Default select example">
-              <option v-for="(cliente, index) in clientes" :key="index" :value="cliente.nif">{{cliente.nombre}}</option>
+            <label for="clientes-input" class="form-label mt-3"
+              >Clientes
+            </label>
+            <select
+              class="form-select"
+              v-model="estadoPago"
+              aria-label="Default select example"
+            >
+              <option
+                v-for="(cliente, index) in clientes"
+                :key="index"
+                :value="cliente.nif"
+              >
+                {{ cliente.nombre }}
+              </option>
             </select>
           </MDBCol>
-          <MDBCol col="4" class="pe-3">
+          <MDBCol col="5" class="pe-3">
             <label for="fecha-vencimiento-input" class="form-label"
               >Fecha de vencimiento</label
             >
@@ -156,28 +179,38 @@ const closeModal = () => {
               v-model="fechaVencimiento"
               :enable-time-picker="false"
             />
-            <label for="estado-pago-input" class="form-label mt-3">Estado de pago </label>
-            <select class="form-select " v-model="estadoPago" aria-label="Default select example">
+            <label for="estado-pago-input" class="form-label mt-3"
+              >Estado de pago
+            </label>
+            <select
+              class="form-select"
+              v-model="estadoPago"
+              aria-label="Default select example"
+            >
               <option :value="CONSTANTS.EstadoPago[0]">Pagado</option>
-              <option :value="CONSTANTS.EstadoPago[1]" selected>Pendiente</option>
+              <option :value="CONSTANTS.EstadoPago[1]" selected>
+                Pendiente
+              </option>
               <option :value="CONSTANTS.EstadoPago[2]">Vencido</option>
             </select>
           </MDBCol>
         </MDBRow>
         <MDBRow class="justify-content-center mt-3">
-          <MDBCol col="9">
+          <MDBCol col="10">
             <label class="form-label">Productos </label>
-            <MDBBtn outline="secondary" style="width:100%">Añadir producto</MDBBtn>
+            <ProductosTable v-if="productos.length >0" :productos="productos"/>
+            <MDBBtn outline="secondary" style="width: 100%" @click="() => productModalOpen.value = true"
+              >Añadir producto</MDBBtn
+            >
           </MDBCol>
         </MDBRow>
-        
+
         <MDBRow class="justify-content-center mt-3">
-          <MDBCol col="3" offsetMd="6">
-            
+          <MDBCol col="3" offsetMd="7">
             <label for="precio-total-input" class="form-label"
-              >Importe total </label
-            >
-        <MDBInput
+              >Importe total
+            </label>
+            <MDBInput
               id="precio-total-input"
               inputGroup
               type="number"
@@ -207,6 +240,7 @@ const closeModal = () => {
           >Crear factura</MDBBtn
         >
       </MDBModalFooter>
+      <ProductoModal :isModalOpen="productModalOpen" @closeModal="() => productoModalOpen.value = false" @addProduct="addProduct"/>
     </form>
   </MDBModal>
 </template>
@@ -216,7 +250,7 @@ const closeModal = () => {
   --mdb-modal-width: 70%;
 }
 
-.form-select{
+.form-select {
   height: 38px;
 }
 </style>
