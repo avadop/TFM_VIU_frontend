@@ -51,7 +51,8 @@ const submitForm = () => {
     idProducto: idProducto.value,
     cantidad: cantidad.value,
   };
-
+  idProducto.value = "";
+  cantidad.value = 1;
   emit("addProduct", producto);
 };
 
@@ -66,13 +67,13 @@ const closeModal = () => {
 <template>
   <MDBModal labelledby="newClientModal" v-model="props.isModalOpen">
     <MDBModalHeader class="mx-4 mt-2">
-      <MDBModalTitle id="newClientModal"> Nueva factura </MDBModalTitle>
+      <MDBModalTitle id="newClientModal"> Agregar producto </MDBModalTitle>
     </MDBModalHeader>
     <form @submit.prevent="submitForm">
       <MDBModalBody class="mt-3">
         <MDBRow start class="justify-content-center">
           <MDBCol col="5" class="pe-3">
-            <label for="clientes-input" class="form-label mt-3"
+            <label for="clientes-input" class="form-label"
               >Producto
             </label>
             <select

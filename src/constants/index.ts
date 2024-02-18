@@ -3,6 +3,7 @@ const FACTURAS_API_URL = 'http://localhost/api/facturas'
 const CLIENTES_API_URL = 'http://localhost/api/clientes'
 const USUARIOS_API_URL = 'http://localhost/api/usuarios'
 const PRODUCTOS_API_URL = 'http://localhost/api/productos'
+const PRODUCTOS_FACTURA_API_URL = 'http://localhost/api/productos_facturas'
 
 enum EstadoPago {
     pagado, pendiente, vencido
@@ -14,5 +15,6 @@ export default {
     CLIENTES_API_URL,
     PRODUCTOS_API_URL,
     USUARIOS_API_URL,
-    EstadoPago
+    EstadoPago,
+    PRODUCTOS_FACTURA_API_URL
 }

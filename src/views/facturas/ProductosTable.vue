@@ -13,28 +13,19 @@ const titles = ref([
   "Cantidad",
 ]);
 const props = defineProps({
-  productos: Array<{idProducto, cantidad}>,
+  productos: Array<{idProducto: number, cantidad:number}>,
+
 });
-const productosMapeados = ref(new Array());
+const productosMapeados = computed(() => {
+  return props.productos?.map((producto:any) => mapProduct(producto))
+})
 
-watch(() => props.productos,() => {
-    props.productos.forEach((producto: any) => {
-      axios.get(`${CONSTANTS.PRODUCTOS_API_URL}/${producto.idProducto}`)
-        .then(({ data: response }: any) => {
-          if (response.statusCode === 200) {
-            productosMapeados.value.push(mapProduct(response.data, producto.cantidad));
-          }
-        });
-    });
-  }
-);
-
-const mapProduct = (producto: any, cantidad:number) => {
+const mapProduct = (producto: any) => {
   return {
         precioBase : producto.precio_unidad,
         precioVenta : Number(producto.precio_unidad * (producto.impuesto / 100 + 1)).toFixed(2),
         nombre : producto.nombre,
-        cantidad : cantidad,
+        cantidad : producto.cantidad,
         impuesto : producto.impuesto,
   }
           
@@ -51,9 +42,9 @@ const mapProduct = (producto: any, cantidad:number) => {
     <tbody>
       <tr v-for="(producto, index) in productosMapeados" :key="index">
         <td>{{ producto.nombre }}</td>
-        <td>{{ producto.precioBase }}</td>
-        <td>{{ producto.impuesto }}</td>
-        <td>{{ producto.precioVenta }}</td>
+        <td>{{ producto.precioBase }} €</td>
+        <td>{{ producto.impuesto }} %</td>
+        <td>{{ producto.precioVenta }} €</td>
         <td>{{ producto.cantidad }}</td>
       </tr>
     </tbody>
