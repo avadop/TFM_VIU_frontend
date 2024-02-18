@@ -37,6 +37,23 @@ const productos = ref(new Array())
 const clientes = ref(new Array())
 const nifSelectedClient = ref("")
 
+onMounted(() => {
+  const userId = store.getters.getLoggedUser.nif;
+
+  axios.get(`${CONSTANTS.CLIENTES_API_URL}/usuario/${userId}`).then(({ data: response }: any) => {
+    if (response.statusCode === 200) {
+      response.data.forEach((cliente: any) => {
+        if (cliente.nif != userId) {
+          clientes.value.push({
+            nif: cliente.nif,
+            nombre: `${cliente.nombre} ${cliente.apellidos}`
+          })
+        }
+      });
+    }
+  })
+})
+
 watch(
   () => props.isEdit,
   (newValue) => {
@@ -112,7 +129,7 @@ const closeModal = () => {
     <form @submit.prevent="submitForm">
       <MDBModalBody class="mt-3">
         <MDBRow start class="justify-content-center">
-          <MDBCol col="3" class="pe-3">
+          <MDBCol col="4" class="pe-3">
             <label for="fecha-emision-input" class="form-label"
               >Fecha de emisión</label
             >
@@ -123,8 +140,12 @@ const closeModal = () => {
               v-model="fechaEmision"
               :enable-time-picker="false"
             />
+            <label for="clientes-input" class="form-label mt-3">Clientes </label>
+            <select class="form-select " v-model="estadoPago" aria-label="Default select example">
+              <option v-for="(cliente, index) in clientes" :key="index" :value="cliente.nif">{{cliente.nombre}}</option>
+            </select>
           </MDBCol>
-          <MDBCol col="3" class="pe-3">
+          <MDBCol col="4" class="pe-3">
             <label for="fecha-vencimiento-input" class="form-label"
               >Fecha de vencimiento</label
             >
@@ -135,10 +156,7 @@ const closeModal = () => {
               v-model="fechaVencimiento"
               :enable-time-picker="false"
             />
-            
-          </MDBCol>
-          <MDBCol col="3" class="pe-3">
-            <label for="estado-pago-input" class="form-label">Estado de pago </label>
+            <label for="estado-pago-input" class="form-label mt-3">Estado de pago </label>
             <select class="form-select " v-model="estadoPago" aria-label="Default select example">
               <option :value="CONSTANTS.EstadoPago[0]">Pagado</option>
               <option :value="CONSTANTS.EstadoPago[1]" selected>Pendiente</option>
