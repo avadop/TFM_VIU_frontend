@@ -84,7 +84,7 @@ const newFactura = () => {
   idEditFactura.value = -1
 }
 
-const closeGastoModal = (reload: Boolean) => {
+const closeFacturaModal = (reload: Boolean) => {
   openFacturaModal.value = false
   editFactura.value = false
   idEditFactura.value = -1

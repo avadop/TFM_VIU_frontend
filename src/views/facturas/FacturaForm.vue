@@ -82,7 +82,7 @@ const submitForm = () => {
     estado_pago: estadoPago.value,
     precio_total: precioTotal.value,
     id_emisor: userId,
-    id_receptor: nifSelectedClient,
+    id_receptor: nifSelectedClient.value,
   };
   if (props.isEdit) {
     const editFactura = {...factura, id_factura: props.idEditFactura}
@@ -115,7 +115,6 @@ const closeModal = () => {
   productos.value = new Array()
   estadoPago.value = CONSTANTS.EstadoPago[CONSTANTS.EstadoPago.pendiente];
   precioTotal.value = 0;
-  clientes.value = new Array()
   nifSelectedClient.value = ""
   emit("closeModal", true);
 };
@@ -141,7 +140,7 @@ const closeModal = () => {
               :enable-time-picker="false"
             />
             <label for="clientes-input" class="form-label mt-3">Clientes </label>
-            <select class="form-select " v-model="estadoPago" aria-label="Default select example">
+            <select class="form-select " v-model="nifSelectedClient" aria-label="Default select example" plaeholder="Cliente de la factura" required>
               <option v-for="(cliente, index) in clientes" :key="index" :value="cliente.nif">{{cliente.nombre}}</option>
             </select>
           </MDBCol>
@@ -165,14 +164,14 @@ const closeModal = () => {
           </MDBCol>
         </MDBRow>
         <MDBRow class="justify-content-center mt-3">
-          <MDBCol col="9">
+          <MDBCol col="8">
             <label class="form-label">Productos </label>
             <MDBBtn outline="secondary" style="width:100%">Añadir producto</MDBBtn>
           </MDBCol>
         </MDBRow>
         
         <MDBRow class="justify-content-center mt-3">
-          <MDBCol col="3" offsetMd="6">
+          <MDBCol col="3" offsetMd="5">
             
             <label for="precio-total-input" class="form-label"
               >Importe total </label
