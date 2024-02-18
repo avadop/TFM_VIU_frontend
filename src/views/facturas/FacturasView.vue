@@ -102,7 +102,7 @@ const closeFacturaModal = (reload: Boolean) => {
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nueva Factura
     </MDBBtn>
     <FacturaModal :isModalOpen="openFacturaModal" :idEditFactura="idEditFactura" :isEdit="editFactura" @closeModal="closeFacturaModal"/>
-    <MDBTable class="align-middle mb-0 bg-white mt-4" v-if="facturas.length > 0">
+    <MDBTable class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>
           <th v-for="(title, index) in titles" :key="index">{{ title }}</th>
