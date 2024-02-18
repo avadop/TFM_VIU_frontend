@@ -57,14 +57,12 @@ const formatEstadoPago = (estadoPago: String) => {
 }
 
 const edit = (idGasto: number) => {
-  console.log("editar gasto", idGasto);
     editGasto.value = true
   openGastoModal.value = true
   idEditGasto.value = idGasto
 };
 
 const remove = (idGasto: number) => {
-  console.log("eliminar gasto", idGasto);
     axios.delete(`${CONSTANTS.FACTURAS_API_URL}/${idGasto}`).then(({data}:any) => {
     if(data.statusCode === 200) {
       getGastos()

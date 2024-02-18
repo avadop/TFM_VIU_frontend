@@ -64,7 +64,7 @@ const remove = (idProducto: number) => {
   })
 };
 
-const newClient = () => {
+const newProduct = () => {
   openProductModal.value = true
   editProduct.value = false
   idEditProduct.value = -1
@@ -83,7 +83,7 @@ const closeProductModal = (reload: Boolean) => {
 <template>
   <section>
     <p>Productos</p>
-    <MDBBtn color="primary" @click="newClient">
+    <MDBBtn color="primary" @click="newProduct">
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nuevo producto
     </MDBBtn>
     <ProductModal :isModalOpen="openProductModal" :idEditProduct="idEditProduct" :isEdit="editProduct" @closeModal="closeProductModal"/>

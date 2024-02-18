@@ -4,6 +4,7 @@ import { MDBTable, MDBBtn, MDBBadge, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex"
 import axios from 'axios'
 import CONSTANTS from '../../constants'
+import FacturaModal from './FacturaForm.vue'
 
 const titles = ref([
   "ID",
@@ -18,11 +19,18 @@ const facturas = ref(new Array())
 
 const store = useStore();
 const userId = ref("");
+const editFactura = ref(false)
+const idEditFactura = ref(-1)
+const openFacturaModal = ref(false)
 
 onMounted(async () => {
   userId.value = store.getters.getLoggedUser.nif;
+  getFacturas()
+});
 
+const getFacturas = () => {
   axios.get(`${CONSTANTS.FACTURAS_API_URL}/emisor/${userId.value}`).then(({ data: response }) => {
+    facturas.value = new Array()
     if (response.statusCode === 200) {
       response.data.forEach(async (factura: any) => {
         const { data: clienteResponse } = await axios.get(`${CONSTANTS.CLIENTES_API_URL}/${factura.id_receptor}`)
@@ -32,7 +40,7 @@ onMounted(async () => {
       })
     }
   })
-});
+}
 
 const formatFactura = (factura: any, cliente: any) => {
   return {
@@ -54,12 +62,35 @@ const formatEstadoPago = (estadoPago: String) => {
 
 }
 
-const edit = (idFactura: Number) => {
-  console.log("editar factura", idFactura);
+const edit = (idFactura: number) => {
+  console.log("editar gasto", idFactura);
+  editFactura.value = true
+  openFacturaModal.value = true
+  idEditFactura.value = idFactura
+};
+
+const remove = (idFactura: number) => {
+  console.log("eliminar gasto", idFactura);
+    axios.delete(`${CONSTANTS.FACTURAS_API_URL}/${idFactura}`).then(({data}:any) => {
+    if(data.statusCode === 200) {
+      getFacturas()
+    }
+  })
+};
+
+const newFactura = () => {
+  openFacturaModal.value = true
+  editFactura.value = false
+  idEditFactura.value = -1
 }
 
-const remove = (idFactura: Number) => {
-  console.log("eliminar factura", idFactura);
+const closeGastoModal = (reload: Boolean) => {
+  openFacturaModal.value = false
+  editFactura.value = false
+  idEditFactura.value = -1
+  if(reload) {
+    getFacturas()
+  }
 }
 
 </script>
@@ -67,9 +98,10 @@ const remove = (idFactura: Number) => {
 <template>
   <section>
     <p>Facturas</p>
-    <MDBBtn color="primary">
+    <MDBBtn color="primary" @click="newFactura">
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nueva Factura
     </MDBBtn>
+    <FacturaModal :isModalOpen="openFacturaModal" :idEditFactura="idEditFactura" :isEdit="editFactura" @closeModal="closeFacturaModal"/>
     <MDBTable class="align-middle mb-0 bg-white mt-4" v-if="facturas.length > 0">
       <thead class="bg-light">
         <tr>
