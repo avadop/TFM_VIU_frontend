@@ -26,9 +26,10 @@ const props = defineProps({
 });
 
 const descripcion = ref("");
-const precioUnidad = ref("");
-const impuesto = ref("");
-const stock = ref("");
+const precioBase = ref(0);
+const precioVenta = ref(0);
+const impuesto = ref(21.00);
+const stock = ref(0);
 const nombre = ref("");
 
 watch(
@@ -41,7 +42,7 @@ watch(
           console.log("response", response);
           if (response.statusCode === 200) {
             descripcion.value = response.data.descripcion;
-            precioUnidad.value = response.data.precio_unidad;
+            precioBase.value = response.data.precio_unidad;
             nombre.value = response.data.nombre;
             stock.value = response.data.stock;
             impuesto.value = response.data.impuesto;
@@ -56,7 +57,7 @@ const submitForm = () => {
     descripcion: descripcion.value,
     nombre: nombre.value,
     impuesto: impuesto.value,
-    precio_unidad: precioUnidad.value,
+    precio_unidad: precioBase.value,
     stock: stock.value,
     id_usuario: store.getters.getLoggedUser.nif,
   };
@@ -82,12 +83,33 @@ const submitForm = () => {
 const closeModal = () => {
   //Limpiar formulario
   descripcion.value = "";
-  precioUnidad.value = "";
+  precioBase.value = 0;
+  precioVenta.value = 0;
   nombre.value = "";
-  stock.value = "";
-  impuesto.value = "";
+  stock.value = 0;
+  impuesto.value = 21.00;
   emit("closeModal", true);
 };
+
+const precioVentaChanged = (event) => {
+  const precioV = event.target.value
+  precioBase.value = Number(precioV / (impuesto.value/100 + 1)).toFixed(3)
+  precioVenta.value = precioV
+}
+
+const precioBaseChanged = (event) => {
+  const precioB = event.target.value
+  precioVenta.value = Number(precioB * (impuesto.value/100 + 1)).toFixed(3)
+  precioBase.value = precioB
+
+}
+
+const impuestoChanged = (event) => {
+  const newImpuesto = event.target.value
+  precioBase.value = Number(precioVenta.value / (impuesto.value/100 + 1)).toFixed(3)
+  impuesto.value = newImpuesto
+
+}
 </script>
 
 <template>
@@ -108,7 +130,7 @@ const closeModal = () => {
               placeholder="Nombre"
               :formOutline="false"
               v-model="nombre"
-              wrapperClass="mb-4"
+              wrapperClass="mb-3"
               required
             >
               <template #prepend>
@@ -130,7 +152,7 @@ const closeModal = () => {
               placeholder="Descripcion"
               :formOutline="false"
               v-model="descripcion"
-              wrapperClass="mb-4"
+              wrapperClass="mb-3"
             >
               <template #prepend>
                 <span class="input-group-text">
@@ -147,10 +169,11 @@ const closeModal = () => {
             <MDBInput
             id="precio-base-input"
               inputGroup
-              type="text"
+              type="number"
               placeholder="0"
               :formOutline="false"
-              v-model="precioUnidad"
+              v-model="precioBase"
+              @input="precioBaseChanged"
               wrapperClass="mb-4"
               required
             >
@@ -166,11 +189,11 @@ const closeModal = () => {
             <MDBInput
             id="impuest-input"
               inputGroup
-              type="text"
+              type="number"
               placeholder="21,00"
               :formOutline="false"
               v-model="impuesto"
-              wrapperClass="mb-4"
+              @input="impuestoChanged"
               required
             >
               <template #prepend>
@@ -185,10 +208,11 @@ const closeModal = () => {
             <MDBInput
             id="precio-unidad-input"
               inputGroup
-              type="text"
+              type="number"
               placeholder="0"
               :formOutline="false"
-              v-model="precioUnidad"
+              v-model="precioVenta"
+              @input="precioVentaChanged"
               wrapperClass="mb-4"
               required
             >
@@ -204,7 +228,7 @@ const closeModal = () => {
             <MDBInput
               id="stock-input"
               inputGroup
-              type="text"
+              type="number"
               placeholder="0"
               :formOutline="false"
               v-model="stock"
@@ -226,7 +250,7 @@ const closeModal = () => {
           >Confirmar cambios</MDBBtn
         >
         <MDBBtn v-else color="primary" class="mx-4" type="submit"
-          >Crear cliente</MDBBtn
+          >Crear producto</MDBBtn
         >
       </MDBModalFooter>
     </form>
