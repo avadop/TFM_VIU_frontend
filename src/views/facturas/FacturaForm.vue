@@ -71,10 +71,14 @@ watch(
             fechaEmision.value = new Date(response.data.fecha_emision);
             fechaVencimiento.value = new Date(response.data.fecha_vencimiento);
             estadoPago.value = response.data.estado_pago;
-            precioTotal.value = response.data.precio_total;
             nifSelectedClient.value = response.data.id_receptor;
           }
         });
+      axios.get(`${CONSTANTS.PRODUCTOS_FACTURA_API_URL}/factura_id/${props.idEditFactura}`).then(({data:response}:any) => {
+        if(response.statusCode === 200) {
+          response.data.forEach((prod_factura:any) => addProduct({cantidad: prod_factura.cantidad, idProducto: prod_factura.id_producto}))
+        }
+      })
     }
   }
 );
@@ -90,11 +94,11 @@ const submitForm = () => {
     id_emisor: userId,
     id_receptor: nifSelectedClient.value,
   };
-  
+
   if (props.isEdit) {
     const editFactura = { ...factura, id_factura: props.idEditFactura };
     axios
-      .put(`${CONSTANTS.FACTURAS_API_URL}/${props.idEditFactura}`, factura)
+      .put(`${CONSTANTS.FACTURAS_API_URL}/${props.idEditFactura}`, editFactura)
       .then(({ data }: any) => {
         if (data.statusCode === 200) {
           closeModal();
@@ -185,7 +189,7 @@ const addProduct = (product: { cantidad: number, idProducto: number }) => {
           <MDBCol col="10">
             <label class="form-label">Productos </label>
             <ProductosTable  v-if="productos.length > 0" :productos="productos" />
-            <MDBBtn class="mt-3" outline="secondary" style="width: 100%" @click="() => productModalOpen = true">Añadir producto
+            <MDBBtn class="mt-3" :disabled="props.isEdit" outline="secondary" style="width: 100%" @click="() => productModalOpen = true">Añadir producto
             </MDBBtn>
           </MDBCol>
         </MDBRow>
