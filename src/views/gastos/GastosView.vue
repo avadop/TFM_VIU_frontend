@@ -4,6 +4,8 @@ import { MDBTable, MDBBtn, MDBBadge, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import CONSTANTS from '../../constants'
 import axios from 'axios'
+import GastoModal from './GastoForm.vue'
+
 
 const titles = ref([
   "ID",
@@ -18,11 +20,20 @@ const userId = ref("");
 
 const gastos = ref(new Array())
 
+const openGastoModal = ref(false)
+const idEditGasto = ref(-1)
+const editGasto = ref(false)
+
 onMounted(async () => {
   userId.value = store.getters.getLoggedUser.nif;
+  getGastos()
+});
 
+const getGastos = async () => {
   axios.get(`${CONSTANTS.FACTURAS_API_URL}/receptor/${userId.value}`).then(({ data: response }:any) => {
     if (response.statusCode === 200) {
+      gastos.value = new Array()
+
       response.data.forEach(async (gasto: any) => {
         gastos.value.push({
           idGasto: gasto.id_factura,
@@ -34,7 +45,7 @@ onMounted(async () => {
       })
     }
   })
-});
+}
 
 const formatEstadoPago = (estadoPago: String) => {
   if (estadoPago === 'pagado')
@@ -45,21 +56,45 @@ const formatEstadoPago = (estadoPago: String) => {
 
 }
 
-const edit = (idGasto: Number) => {
+const edit = (idGasto: number) => {
   console.log("editar gasto", idGasto);
+    editGasto.value = true
+  openGastoModal.value = true
+  idEditGasto.value = idGasto
 };
 
-const remove = (idGasto: Number) => {
+const remove = (idGasto: number) => {
   console.log("eliminar gasto", idGasto);
+    axios.delete(`${CONSTANTS.FACTURAS_API_URL}/${idGasto}`).then(({data}:any) => {
+    if(data.statusCode === 200) {
+      getGastos()
+    }
+  })
 };
+
+const newGasto = () => {
+  openGastoModal.value = true
+  editGasto.value = false
+  idEditGasto.value = -1
+}
+
+const closeGastoModal = (reload: Boolean) => {
+  openGastoModal.value = false
+  editGasto.value = false
+  idEditGasto.value = -1
+  if(reload) {
+    getGastos()
+  }
+}
 </script>
 
 <template>
   <section>
     <p>Gastos</p>
-    <MDBBtn color="primary">
+    <MDBBtn color="primary" @click="newGasto">
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nuevo Gasto
     </MDBBtn>
+    <GastoModal :isModalOpen="openGastoModal" :idEditGasto="idEditGasto" :isEdit="editGasto" @closeModal="closeGastoModal"/>
     <MDBTable class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>

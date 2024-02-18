@@ -136,7 +136,7 @@ const impuestoChanged = (event) => {
             >
               <template #prepend>
                 <span class="input-group-text">
-                  <MDBIcon icon="user"></MDBIcon>
+                  <MDBIcon icon="font"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
@@ -157,7 +157,7 @@ const impuestoChanged = (event) => {
             >
               <template #prepend>
                 <span class="input-group-text">
-                  <MDBIcon icon="address-card"></MDBIcon>
+                  <MDBIcon icon="scroll"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
@@ -182,7 +182,7 @@ const impuestoChanged = (event) => {
             >
               <template #prepend>
                 <span class="input-group-text">
-                  <MDBIcon icon="map-marker-alt"></MDBIcon>
+                  <MDBIcon icon="euro-sign"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
@@ -203,7 +203,7 @@ const impuestoChanged = (event) => {
             >
               <template #prepend>
                 <span class="input-group-text">
-                  <MDBIcon icon="map-marker-alt"></MDBIcon>
+                  <MDBIcon icon="percent"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
@@ -225,7 +225,7 @@ const impuestoChanged = (event) => {
             >
               <template #prepend>
                 <span class="input-group-text">
-                  <MDBIcon icon="map-marker-alt"></MDBIcon>
+                  <MDBIcon icon="euro-sign"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
@@ -244,7 +244,7 @@ const impuestoChanged = (event) => {
             >
               <template #prepend>
                 <span class="input-group-text">
-                  <MDBIcon icon="map-marker-alt"></MDBIcon>
+                  <MDBIcon icon="box-open"></MDBIcon>
                 </span>
               </template>
             </MDBInput>
