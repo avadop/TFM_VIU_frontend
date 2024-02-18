@@ -20,7 +20,7 @@ const userId = ref("");
 const productos = ref(new Array())
 
 const openProductModal = ref(false)
-const idEditProduct = ref(null)
+const idEditProduct = ref(-1)
 const editProduct = ref(false)
 
 onMounted(() => {
@@ -41,6 +41,7 @@ const getProducts = () => {
 
 const formatProducto = (producto: any) => {
   return {
+    idProducto: producto.id_producto,
     nombre: producto.nombre,
     precioBase: producto.precio_unidad,
     impuesto: `${producto.impuesto} %`,
@@ -66,13 +67,13 @@ const remove = (idProducto: number) => {
 const newClient = () => {
   openProductModal.value = true
   editProduct.value = false
-  idEditProduct.value = null
+  idEditProduct.value = -1
 }
 
 const closeProductModal = (reload: Boolean) => {
   openProductModal.value = false
   editProduct.value = false
-  idEditProduct.value = ""
+  idEditProduct.value = -1
   if(reload) {
     getProducts()
   }

@@ -39,10 +39,10 @@ watch(
       axios
         .get(`${CONSTANTS.PRODUCTOS_API_URL}/${props.idEditProduct}`)
         .then(({ data: response }: any) => {
-          console.log("response", response);
           if (response.statusCode === 200) {
             descripcion.value = response.data.descripcion;
             precioBase.value = response.data.precio_unidad;
+            precioVenta.value = Number(response.data.precio_unidad * (impuesto.value/100 + 1)).toFixed(2)
             nombre.value = response.data.nombre;
             stock.value = response.data.stock;
             impuesto.value = response.data.impuesto;
@@ -53,7 +53,8 @@ watch(
 );
 
 const submitForm = () => {
-  const client = {
+  const product = {
+    id_producto: props.idEditProduct,
     descripcion: descripcion.value,
     nombre: nombre.value,
     impuesto: impuesto.value,
@@ -63,7 +64,7 @@ const submitForm = () => {
   };
   if (props.isEdit) {
     axios
-      .put(`${CONSTANTS.PRODUCTOS_API_URL}/${props.idEditProduct}`, client)
+      .put(`${CONSTANTS.PRODUCTOS_API_URL}/${props.idEditProduct}`, product)
       .then(({ data }: any) => {
         if (data.statusCode === 200) {
           closeModal();
@@ -71,7 +72,7 @@ const submitForm = () => {
       });
   } else {
     axios
-      .post(`${CONSTANTS.PRODUCTOS_API_URL}/new`, client)
+      .post(`${CONSTANTS.PRODUCTOS_API_URL}/new`, product)
       .then(({ data }: any) => {
         if (data.statusCode === 200) {
           closeModal();
@@ -93,20 +94,20 @@ const closeModal = () => {
 
 const precioVentaChanged = (event) => {
   const precioV = event.target.value
-  precioBase.value = Number(precioV / (impuesto.value/100 + 1)).toFixed(3)
+  precioBase.value = Number(precioV / (impuesto.value/100 + 1)).toFixed(2)
   precioVenta.value = precioV
 }
 
 const precioBaseChanged = (event) => {
   const precioB = event.target.value
-  precioVenta.value = Number(precioB * (impuesto.value/100 + 1)).toFixed(3)
+  precioVenta.value = Number(precioB * (impuesto.value/100 + 1)).toFixed(2)
   precioBase.value = precioB
 
 }
 
 const impuestoChanged = (event) => {
   const newImpuesto = event.target.value
-  precioBase.value = Number(precioVenta.value / (impuesto.value/100 + 1)).toFixed(3)
+  precioBase.value = Number(precioVenta.value / (impuesto.value/100 + 1)).toFixed(2)
   impuesto.value = newImpuesto
 
 }
@@ -171,6 +172,8 @@ const impuestoChanged = (event) => {
               inputGroup
               type="number"
               placeholder="0"
+              step="0.01"
+              min="0"
               :formOutline="false"
               v-model="precioBase"
               @input="precioBaseChanged"
@@ -190,6 +193,8 @@ const impuestoChanged = (event) => {
             id="impuest-input"
               inputGroup
               type="number"
+              step="0.01"
+              min="0"
               placeholder="21,00"
               :formOutline="false"
               v-model="impuesto"
@@ -209,6 +214,8 @@ const impuestoChanged = (event) => {
             id="precio-unidad-input"
               inputGroup
               type="number"
+              step="0.01"
+              min="0"
               placeholder="0"
               :formOutline="false"
               v-model="precioVenta"
