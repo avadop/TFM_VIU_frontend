@@ -42,8 +42,8 @@ watch(
         .get(`${CONSTANTS.FACTURAS_API_URL}/${props.idEditGasto}`)
         .then(({ data: response }: any) => {
           if (response.statusCode === 200) {
-            fechaEmision.value = response.data.fecha_emision;
-            fechaVencimiento.value = response.data.fecha_vencimiento;
+            fechaEmision.value = new Date(response.data.fecha_emision);
+            fechaVencimiento.value = new Date(response.data.fecha_vencimiento);
             estadoPago.value = response.data.estado_pago;
             precioTotal.value = response.data.precio_total;
           }
@@ -54,21 +54,20 @@ watch(
 
 const submitForm = () => {
   const userId = store.getters.getLoggedUser.nif;
+  
   const gasto = {
-    id_gasto: props.idEditGasto,
-    fecha_vencimiento: fechaVencimiento.value,
-    fecha_emision: fechaEmision.value,
+    id_factura: props.idEditGasto,
+    fecha_vencimiento: formatDate(fechaVencimiento.value),
+    fecha_emision: formatDate(fechaEmision.value),
     estado_pago: estadoPago.value,
     precio_total: precioTotal.value,
     id_emisor: userId,
     id_receptor: userId,
   };
-  console.log("gasto", gasto);
   if (props.isEdit) {
     axios
       .put(`${CONSTANTS.FACTURAS_API_URL}/${props.idEditGasto}`, gasto)
       .then(({ data }: any) => {
-        console.log("EDITAR GASTO", data);
         if (data.statusCode === 200) {
           closeModal();
         }
@@ -77,13 +76,16 @@ const submitForm = () => {
     axios
       .post(`${CONSTANTS.FACTURAS_API_URL}/new`, gasto)
       .then(({ data }: any) => {
-        console.log("create gasto", data);
         if (data.statusCode === 200) {
           closeModal();
         }
       });
   }
 };
+
+const formatDate = (date: Date) => {
+  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+}
 
 const closeModal = () => {
   //Limpiar formulario
@@ -139,7 +141,7 @@ const closeModal = () => {
           </MDBCol>
           <MDBCol col="4" class="pe-3">
             <label for="fecha-vencimiento-input" class="form-label"
-              >Fecha de emisión</label
+              >Fecha de vencimiento</label
             >
             <DatePicker
               required

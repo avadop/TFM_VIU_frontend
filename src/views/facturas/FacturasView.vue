@@ -37,8 +37,8 @@ onMounted(async () => {
 const formatFactura = (factura: any, cliente: any) => {
   return {
           idFactura: factura.id_factura,
-          fechaEmision: factura.fecha_emision,
-          fechaVencimiento: factura.fecha_vencimiento,
+          fechaEmision: new Date(factura.fecha_emision).toLocaleDateString('en-GB'),
+          fechaVencimiento: new Date(factura.fecha_vencimiento).toLocaleDateString('en-GB'),
           nombreCliente: `${cliente.nombre} ${cliente.apellidos}`,
           precioTotal: `${factura.precio_total} €`,
           estadoPago: formatEstadoPago(factura.estado_pago)

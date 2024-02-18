@@ -37,8 +37,8 @@ const getGastos = async () => {
       response.data.forEach(async (gasto: any) => {
         gastos.value.push({
           idGasto: gasto.id_factura,
-          fechaEmision: gasto.fecha_emision,
-          fechaVencimiento: gasto.fecha_vencimiento,
+          fechaEmision: new Date(gasto.fecha_emision).toLocaleDateString('en-GB'),
+          fechaVencimiento: new Date(gasto.fecha_vencimiento).toLocaleDateString('en-GB'),
           precioTotal: `${gasto.precio_total} €`,
           estadoPago: formatEstadoPago(gasto.estado_pago)
         })
