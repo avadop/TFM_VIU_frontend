@@ -18,7 +18,9 @@ const store = useStore();
 const userId = ref("");
 
 const clientes = ref(new Array())
-const openNewClientModal = ref(false)
+const openClientModal = ref(false)
+const editClient = ref(false)
+const nifEditClient = ref("")
 
 onMounted(() => {
   userId.value = store.getters.getLoggedUser.nif;
@@ -26,6 +28,7 @@ onMounted(() => {
 });
 
 const getClients = () => {
+  clientes.value = new Array()
   axios.get(`${CONSTATNS.CLIENTES_API_URL}/usuario/${userId.value}`).then(({ data: response }: any) => {
     if (response.statusCode === 200) {
       response.data.forEach((cliente: any) => {
@@ -46,25 +49,34 @@ const formatCliente = (cliente: any) => {
   }
 }
 
-const edit = (nif: String) => {
+const edit = (nif: string) => {
   console.log("editar cliente", nif);
+  editClient.value = true
+  openClientModal.value = true
+  nifEditClient.value = nif
 };
 
-const remove = (nif: String) => {
-  console.log("eliminar cliente", nif);
+const remove = (nif: string) => {
+  axios.delete(`${CONSTATNS.CLIENTES_API_URL}/${nif}`).then(({data}:any) => {
+    if(data.statusCode === 200) {
+      getClients()
+    }
+  })
 };
 
 const newClient = () => {
-  console.log("NUEVO CLIENTE")
-  openNewClientModal.value = true
-  console.log("openNewClientModal", openNewClientModal)
+  openClientModal.value = true
+  editClient.value = false
+  nifEditClient.value = ""
 }
 
-const closeNewClientModal = (reload) => {
-  openNewClientModal.value = false
-  console.log("reload", reload)
-  if(reload) getClients()
-
+const closeClientModal = (reload: Boolean) => {
+  openClientModal.value = false
+  editClient.value = false
+  nifEditClient.value = ""
+  if(reload) {
+    getClients()
+  }
 }
 </script>
 
@@ -74,7 +86,7 @@ const closeNewClientModal = (reload) => {
     <MDBBtn color="primary" @click="newClient">
       <MDBIcon icon="plus" class="me-2" ></MDBIcon>Nuevo Cliente
     </MDBBtn>
-    <NewClientModal :isModalOpen="openNewClientModal" @closeModal="closeNewClientModal"/>
+    <NewClientModal :isModalOpen="openClientModal" :nifEditClient="nifEditClient" :isEdit="editClient" @closeModal="closeClientModal"/>
     <MDBTable class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>
