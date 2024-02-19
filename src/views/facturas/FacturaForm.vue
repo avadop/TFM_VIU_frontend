@@ -120,7 +120,6 @@ const submitForm = () => {
 
 const createProductosFactura = (cantidad:number, id_factura:number, id_producto:number) => {
   axios.post(`${CONSTANTS.PRODUCTOS_FACTURA_API_URL}/new`, {cantidad, id_factura, id_producto}).then(({data:response} :any ) => {
-    console.log("RESPONSE FACTURAS PRODUCTOS", response)
   })
 }
 

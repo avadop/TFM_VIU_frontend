@@ -5,6 +5,7 @@ import { useStore } from "vuex"
 import axios from 'axios'
 import CONSTANTS from '../../constants'
 import FacturaModal from './FacturaForm.vue'
+import ModalFacturaIndividual from './FacturaIndividual.vue'
 
 const titles = ref([
   "ID",
@@ -22,6 +23,9 @@ const userId = ref("");
 const editFactura = ref(false)
 const idEditFactura = ref(-1)
 const openFacturaModal = ref(false)
+
+const openModalFacturaIndividual = ref(false)
+const selectedFactura = ref()
 
 onMounted(async () => {
   userId.value = store.getters.getLoggedUser.nif;
@@ -48,6 +52,7 @@ const formatFactura = (factura: any, cliente: any) => {
           fechaEmision: new Date(factura.fecha_emision).toLocaleDateString('en-GB'),
           fechaVencimiento: new Date(factura.fecha_vencimiento).toLocaleDateString('en-GB'),
           nombreCliente: `${cliente.nombre} ${cliente.apellidos}`,
+          idCliente: cliente.nif,
           precioTotal: `${factura.precio_total} €`,
           estadoPago: formatEstadoPago(factura.estado_pago)
         }
@@ -63,14 +68,12 @@ const formatEstadoPago = (estadoPago: String) => {
 }
 
 const edit = (idFactura: number) => {
-  console.log("editar gasto", idFactura);
   editFactura.value = true
   openFacturaModal.value = true
   idEditFactura.value = idFactura
 };
 
 const remove = (idFactura: number) => {
-  console.log("eliminar gasto", idFactura);
     axios.delete(`${CONSTANTS.FACTURAS_API_URL}/${idFactura}`).then(({data}:any) => {
     if(data.statusCode === 200) {
       getFacturas()
@@ -93,8 +96,14 @@ const closeFacturaModal = (reload: Boolean) => {
   }
 }
 
-const openFacturaIndividual = () => {
-  console.log("OPEN INDIVIDUAL")
+const openFacturaIndividual = (factura: any) => {
+  selectedFactura.value = factura
+  openModalFacturaIndividual.value = true
+}
+
+const closeFacturaIndividual = () => {
+  selectedFactura.value = {}
+  openModalFacturaIndividual.value = false
 }
 
 </script>
@@ -106,6 +115,7 @@ const openFacturaIndividual = () => {
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nueva Factura
     </MDBBtn>
     <FacturaModal :isModalOpen="openFacturaModal" :idEditFactura="idEditFactura" :isEdit="editFactura" @closeModal="closeFacturaModal"/>
+    <ModalFacturaIndividual :factura="selectedFactura" :isModalOpen="openModalFacturaIndividual" @closeModal="closeFacturaIndividual"></ModalFacturaIndividual>
     <MDBTable hover class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>
@@ -113,7 +123,7 @@ const openFacturaIndividual = () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(factura, index) in facturas" :key="index" style="cursor:pointer" @click="openFacturaIndividual">
+        <tr v-for="(factura, index) in facturas" :key="index" style="cursor:pointer" @click="openFacturaIndividual(factura)">
           <td>{{ userId }}{{ factura.idFactura }}</td>
           <td>{{ factura.nombreCliente }}</td>
           <td>{{ factura.fechaEmision }}</td>

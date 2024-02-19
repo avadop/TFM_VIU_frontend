@@ -14,19 +14,16 @@ const userId = ref("")
 const password = ref("")
 
 const login = () => {
-  // axios.post(`${CONSTANTS.USER_API_URL}/login`, {
-  //     nif: userId.value,
-  //     contrasenya: password.value
-  // }).then(({data: response}) => {
-  //   if(response.statusCode === 200) {
-  //     store.commit('saveLoggedUser', response.data)
-  //     router.push('/summary')
-  //   }
+   axios.post(`${CONSTANTS.USER_API_URL}/login`, {
+       nif: userId.value,
+       contrasenya: password.value
+   }).then(({data: response}) => {
+     if(response.statusCode === 200) {
+       store.commit('saveLoggedUser', response.data)
+       router.push('/summary')
+     }
 
-  // }).catch(e => console.log("error", e))
-
-  store.commit('saveLoggedUser', {nombre: 'Andrea', apellidos: 'del Vado Puell', nif: '01189877H'})
-  router.push('/summary')
+   }).catch(e => console.log("error", e))
 };
 
 </script>
