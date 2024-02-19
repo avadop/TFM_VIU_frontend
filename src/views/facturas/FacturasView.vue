@@ -93,6 +93,10 @@ const closeFacturaModal = (reload: Boolean) => {
   }
 }
 
+const openFacturaIndividual = () => {
+  console.log("OPEN INDIVIDUAL")
+}
+
 </script>
 
 <template>
@@ -102,14 +106,14 @@ const closeFacturaModal = (reload: Boolean) => {
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nueva Factura
     </MDBBtn>
     <FacturaModal :isModalOpen="openFacturaModal" :idEditFactura="idEditFactura" :isEdit="editFactura" @closeModal="closeFacturaModal"/>
-    <MDBTable class="align-middle mb-0 bg-white mt-4">
+    <MDBTable hover class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>
           <th v-for="(title, index) in titles" :key="index">{{ title }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(factura, index) in facturas" :key="index">
+        <tr v-for="(factura, index) in facturas" :key="index" style="cursor:pointer" @click="openFacturaIndividual">
           <td>{{ userId }}{{ factura.idFactura }}</td>
           <td>{{ factura.nombreCliente }}</td>
           <td>{{ factura.fechaEmision }}</td>
