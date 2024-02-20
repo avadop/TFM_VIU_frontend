@@ -30,6 +30,8 @@ const emisor = ref()
 const productos = ref(new Array());
 const importeBase = ref(0)
 
+const pdf = ref()
+
 
 watch(
   () => props.factura,
@@ -98,6 +100,8 @@ const closeModal = () => {
 };
 
 const generatePDF = () => {
+  console.log("generar pdf" )
+  pdf.value.download()
 }
 
 </script>
@@ -108,6 +112,7 @@ const generatePDF = () => {
       <h2 id="detallesFactura"> Detalles factura</h2>
     </MDBModalHeader>
     <MDBModalBody class="mt-3">
+    <v-pdf ref="pdf" filename="factura">
       <MDBRow start>
         <MDBCol offsetMd="1" col="5" class="ps-4">
           <h3 class="mb-3">Información factura </h3>
@@ -136,6 +141,7 @@ const generatePDF = () => {
           </div>
         </MDBCol>
       </MDBRow>
+    </v-pdf>
 
     </MDBModalBody>
     <MDBModalFooter class="py-3 mt-2">

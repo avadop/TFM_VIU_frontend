@@ -5,7 +5,7 @@ import { useStore } from "vuex"
 import axios from 'axios'
 import CONSTANTS from '../../constants'
 import FacturaModal from './FacturaForm.vue'
-import ModalFacturaIndividual from './FacturaIndividual.vue'
+import DetallesFacturaModal from './DetallesFactura.vue'
 
 const titles = ref([
   "ID",
@@ -24,7 +24,7 @@ const editFactura = ref(false)
 const idEditFactura = ref(-1)
 const openFacturaModal = ref(false)
 
-const openModalFacturaIndividual = ref(false)
+const openDetallesFacturaModal = ref(false)
 const selectedFactura = ref()
 
 onMounted(async () => {
@@ -98,12 +98,12 @@ const closeFacturaModal = (reload: Boolean) => {
 
 const openFacturaIndividual = (factura: any) => {
   selectedFactura.value = factura
-  openModalFacturaIndividual.value = true
+  openDetallesFacturaModal.value = true
 }
 
 const closeFacturaIndividual = () => {
   selectedFactura.value = {}
-  openModalFacturaIndividual.value = false
+  openDetallesFacturaModal.value = false
 }
 
 </script>
@@ -115,7 +115,7 @@ const closeFacturaIndividual = () => {
       <MDBIcon icon="plus" class="me-2"></MDBIcon>Nueva Factura
     </MDBBtn>
     <FacturaModal :isModalOpen="openFacturaModal" :idEditFactura="idEditFactura" :isEdit="editFactura" @closeModal="closeFacturaModal"/>
-    <ModalFacturaIndividual :factura="selectedFactura" :isModalOpen="openModalFacturaIndividual" @closeModal="closeFacturaIndividual"></ModalFacturaIndividual>
+    <DetallesFacturaModal :factura="selectedFactura" :isModalOpen="openDetallesFacturaModal" @closeModal="closeFacturaIndividual"></DetallesFacturaModal>
     <MDBTable hover class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>
@@ -123,13 +123,13 @@ const closeFacturaIndividual = () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(factura, index) in facturas" :key="index" style="cursor:pointer" @click="openFacturaIndividual(factura)">
-          <td>{{ userId }}{{ factura.idFactura }}</td>
-          <td>{{ factura.nombreCliente }}</td>
-          <td>{{ factura.fechaEmision }}</td>
-          <td>{{ factura.fechaVencimiento }}</td>
-          <td>{{ factura.precioTotal }}</td>
-          <td>
+        <tr v-for="(factura, index) in facturas" :key="index" style="cursor:pointer" >
+          <td @click="openFacturaIndividual(factura)">{{ userId }}{{ factura.idFactura }}</td>
+          <td @click="openFacturaIndividual(factura)">{{ factura.nombreCliente }}</td>
+          <td @click="openFacturaIndividual(factura)">{{ factura.fechaEmision }}</td>
+          <td @click="openFacturaIndividual(factura)">{{ factura.fechaVencimiento }}</td>
+          <td @click="openFacturaIndividual(factura)">{{ factura.precioTotal }}</td>
+          <td @click="openFacturaIndividual(factura)">
             <MDBBadge :badge="factura.estadoPago.badge" pill class="d-inline">{{ factura.estadoPago.text }}</MDBBadge>
           </td>
           <td>
