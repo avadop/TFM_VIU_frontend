@@ -8,6 +8,7 @@ import {
   MDBCollapse,
   MDBIcon,
   MDBBtn,
+MDBBadge,
 } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import { computed } from "vue";
@@ -77,7 +78,11 @@ const logout = () => {
             Productos
           </MDBNavbarItem>
         </MDBNavbarNav>
-        <div class="me-4">
+        <div class="me-4 d-flex align-items-center">
+          <div class="me-4 d-flex align-items-center">
+            <MDBIcon icon="bell" size="lg"></MDBIcon>
+            <MDBBadge color="danger">3</MDBBadge>
+          </div>
           <span class="me-4">{{ loggedUser.nombre }} {{ loggedUser.apellidos }}</span>
           <MDBBtn color="danger" floating @click="logout">
             <MDBIcon size="lg" icon="power-off"></MDBIcon>
