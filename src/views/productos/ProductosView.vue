@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
+import { MDBTable, MDBBtn, MDBIcon, MDBRow, MDBCol } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import axios from 'axios'
 import CONSTANTS from '../../constants'
@@ -57,8 +57,8 @@ const edit = (idProducto: number) => {
 };
 
 const remove = (idProducto: number) => {
-    axios.delete(`${CONSTANTS.PRODUCTOS_API_URL}/${idProducto}`).then(({data}:any) => {
-    if(data.statusCode === 200) {
+  axios.delete(`${CONSTANTS.PRODUCTOS_API_URL}/${idProducto}`).then(({ data }: any) => {
+    if (data.statusCode === 200) {
       getProducts()
     }
   })
@@ -74,45 +74,52 @@ const closeProductModal = (reload: Boolean) => {
   openProductModal.value = false
   editProduct.value = false
   idEditProduct.value = -1
-  if(reload) {
+  if (reload) {
     getProducts()
   }
 }
 </script>
 
 <template>
-  <section>
-    <p>Productos</p>
-    <MDBBtn color="primary" @click="newProduct">
-      <MDBIcon icon="plus" class="me-2"></MDBIcon>Nuevo producto
-    </MDBBtn>
-    <ProductModal :isModalOpen="openProductModal" :idEditProduct="idEditProduct" :isEdit="editProduct" @closeModal="closeProductModal"/>
-    <MDBTable class="align-middle mb-0 bg-white mt-4">
-      <thead class="bg-light">
-        <tr>
-          <th v-for="(title, index) in titles" :key="index">{{ title }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(producto, index) in productos" :key="index">
-          <td>{{ producto.nombre }}</td>
-          <td>{{ producto.precioBase }}</td>
-          <td>{{ producto.impuesto }}</td>
-          <td>{{ producto.precioVenta }}</td>
-          <td>{{ producto.stock }}</td>
-          <td>
-            <div class="d-flex">
-              <MDBBtn color="link" size="sm" floating @click="edit(producto.idProducto)">
-                <MDBIcon icon="pen"></MDBIcon>
-              </MDBBtn>
-              <MDBBtn color="link" size="sm" floating @click="remove(producto.idProducto)">
-                <MDBIcon icon="trash" style="color: #C21807;"></MDBIcon>
-              </MDBBtn>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </MDBTable>
+  <section class="background-orange">
+    <MDBRow start class="justify-content-center">
+      <MDBCol col="10">
+        <div class="mt-4 d-flex justify-content-between">
+          <h2 style="font-weight: 600;">Productos</h2>
+          <MDBBtn color="primary" @click="newProduct">
+            <MDBIcon icon="plus" class="me-2"></MDBIcon>Nuevo producto
+          </MDBBtn>
+        </div>
+        <ProductModal :isModalOpen="openProductModal" :idEditProduct="idEditProduct" :isEdit="editProduct"
+          @closeModal="closeProductModal" />
+        <MDBTable class="align-middle mb-0 bg-white mt-4">
+          <thead class="bg-light">
+            <tr>
+              <th v-for="(title, index) in titles" :key="index">{{ title }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(producto, index) in productos" :key="index">
+              <td>{{ producto.nombre }}</td>
+              <td>{{ producto.precioBase }}</td>
+              <td>{{ producto.impuesto }}</td>
+              <td>{{ producto.precioVenta }}</td>
+              <td>{{ producto.stock }}</td>
+              <td>
+                <div class="d-flex">
+                  <MDBBtn color="link" size="sm" floating @click="edit(producto.idProducto)">
+                    <MDBIcon icon="pen"></MDBIcon>
+                  </MDBBtn>
+                  <MDBBtn color="link" size="sm" floating @click="remove(producto.idProducto)">
+                    <MDBIcon icon="trash" style="color: #C21807;"></MDBIcon>
+                  </MDBBtn>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </MDBTable>
+      </MDBCol>
+    </MDBRow>
   </section>
 </template>
 

@@ -109,7 +109,6 @@ const logout = () => {
     width: 80%
     background-color: white
     border-radius: 0.15em
-    min-height: 5em
-    padding: 1.5em 2em
-    min-height: 85%
+    padding: 1.5em 2em 4em 2em
+    min-height: 80vh
 </style>
