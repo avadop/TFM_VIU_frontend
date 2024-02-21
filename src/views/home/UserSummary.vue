@@ -7,7 +7,9 @@ import SubHeader from "../../components/SubHeader.vue";
 import SummaryCard from "../../components/SummaryCard.vue";
 import axios from 'axios'
 import CONSTANTS from '../../constants'
-import { format } from "path";
+import Chart from '../../components/Chart.vue'
+import {VuePlotly} from 'vue3-plotly'
+
 
 const store = useStore()
 const router = useRouter()
@@ -21,7 +23,6 @@ onMounted(() => {
   user.value = store.getters.getLoggedUser
   calcularIngresos()
   calcularGastos()
-
   resetMaps();
 })
 
@@ -100,7 +101,28 @@ const beneficionsMonth = computed(() => {
   const monthToday = new Date().getMonth() + 1
   const ingMonth = ingresos.value.get(monthToday)
   const gastMonth = gastos.value.get(monthToday)
-  return ingMonth && gastMonth ? ingMonth - gastMonth : 0
+  
+  return ingMonth >=0 && gastMonth >=0 ? ingMonth - gastMonth : 0
+})
+
+const dataChart = computed(() => {
+  let beneficios = new Array(12).fill(0)
+  console.log("ingresos.value", ingresos.value)
+  const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo','Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+  for(let key of ingresos.value.keys()){
+    let ingreso = ingresos.value.get(key)
+    let gasto = gastos.value.get(key)
+    beneficios[key -1] = (ingreso >= 0 && gasto >= 0 ? ingreso - gasto : 0)
+  }
+
+  console.log("BENEFICIOS", beneficios)
+    console.log("MESES", meses)
+  return [{
+    x: meses,
+    y: beneficios,
+    type:"bar",
+    marker: {color: "#e69936"}
+  }]
 })
 
 </script>
@@ -118,8 +140,10 @@ const beneficionsMonth = computed(() => {
         <SummaryCard class="mx-3" title="Gastos" :amount="gastosMonth" icon="cart-arrow-down"></SummaryCard>
         <SummaryCard class="ms-3" title="Beneficios" :amount="beneficionsMonth" icon="piggy-bank"></SummaryCard>
       </div>
-      <h4 class="mt-4">Resumen de este año</h4>
-      <h4 class="mt-4">Últimas ventas</h4>
+      <h4 class="mt-4">Resumen de beneficios de este año</h4>
+<VuePlotly :data="dataChart"></VuePlotly>
+
+      <h4>Últimas ventas</h4>
       <MDBTable hover class="align-middle mb-0 bg-white mt-4">
       <thead class="bg-light">
         <tr>
