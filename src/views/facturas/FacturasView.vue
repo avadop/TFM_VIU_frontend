@@ -123,7 +123,7 @@ const closeFacturaIndividual = () => {
           @closeModal="closeFacturaModal" />
         <DetallesFacturaModal :factura="selectedFactura" :isModalOpen="openDetallesFacturaModal"
           @closeModal="closeFacturaIndividual"></DetallesFacturaModal>
-        <MDBTable hover class="align-middle mb-0 bg-white mt-4">
+        <MDBTable hover class="align-middle mb-0 bg-white mt-4 table-border">
           <thead class="bg-light">
             <tr>
               <th v-for="(title, index) in titles" :key="index">{{ title }}</th>

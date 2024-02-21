@@ -92,7 +92,7 @@ const closeProductModal = (reload: Boolean) => {
         </div>
         <ProductModal :isModalOpen="openProductModal" :idEditProduct="idEditProduct" :isEdit="editProduct"
           @closeModal="closeProductModal" />
-        <MDBTable class="align-middle mb-0 bg-white mt-4">
+        <MDBTable class="table-border align-middle mb-0 bg-white mt-4">
           <thead class="bg-light">
             <tr>
               <th v-for="(title, index) in titles" :key="index">{{ title }}</th>

@@ -98,7 +98,7 @@ const closeGastoModal = (reload: Boolean) => {
         </div>
         <GastoModal :isModalOpen="openGastoModal" :idEditGasto="idEditGasto" :isEdit="editGasto"
           @closeModal="closeGastoModal" />
-        <MDBTable class="align-middle mb-0 bg-white mt-4">
+        <MDBTable class=" table-border align-middle mb-0 bg-white mt-4">
           <thead class="bg-light">
             <tr>
               <th v-for="(title, index) in titles" :key="index">{{ title }}</th>
