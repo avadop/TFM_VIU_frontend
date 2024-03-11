@@ -100,7 +100,7 @@ const closeModal = () => {
 <template>
   <MDBModal labelledby="newClientModal" v-model="props.isModalOpen">
     <MDBModalHeader class="mx-4 mt-2">
-      <MDBModalTitle id="newClientModal"> Nuevo gasto </MDBModalTitle>
+      <MDBModalTitle id="newClientModal"> Editar gasto </MDBModalTitle>
     </MDBModalHeader>
     <form @submit.prevent="submitForm">
       <MDBModalBody class="mt-3">

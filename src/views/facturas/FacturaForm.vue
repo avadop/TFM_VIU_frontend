@@ -154,7 +154,7 @@ const addProduct = (product: { cantidad: number, idProducto: number }) => {
 <template>
   <MDBModal labelledby="newClientModal" v-model="props.isModalOpen">
     <MDBModalHeader class="mx-4 mt-2">
-      <MDBModalTitle id="newClientModal"> Nueva factura </MDBModalTitle>
+      <MDBModalTitle id="newClientModal"> Editar factura </MDBModalTitle>
     </MDBModalHeader>
     <form @submit.prevent="submitForm">
       <MDBModalBody class="mt-3">

@@ -116,7 +116,7 @@ const impuestoChanged = (event) => {
 <template>
   <MDBModal labelledby="newClientModal" v-model="props.isModalOpen">
     <MDBModalHeader class="mx-4 mt-2">
-      <MDBModalTitle id="newClientModal"> Nuevo producto </MDBModalTitle>
+      <MDBModalTitle id="newClientModal"> Editar producto </MDBModalTitle>
     </MDBModalHeader>
     <form @submit.prevent="submitForm">
       <MDBModalBody class="mt-3">
